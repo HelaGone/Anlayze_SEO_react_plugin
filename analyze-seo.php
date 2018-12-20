@@ -18,6 +18,8 @@ define( 'WP_SEO_URL', trailingslashit( plugins_url( '', __FILE__ ) ) );
 //  Exit if accessed directly.
 defined('ABSPATH') || exit;
 
+include_once WP_SEO_PATH . '/includes/seo-metaboxes.php';
+
 /**
  * Enqueue front end and editor JavaScript and CSS
  */
@@ -44,8 +46,3 @@ function analyze_seo_scripts() {
 }
 // Hook scripts function into block editor hook
 add_action('enqueue_block_assets', 'analyze_seo_scripts');
-
-include_once WP_SEO_PATH . '/includes/seo-metaboxes.php';
-
-
-
