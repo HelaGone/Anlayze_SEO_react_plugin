@@ -21,6 +21,9 @@
 .indicator_section table {
   width: 100%; }
 
+.indicator_section table tbody td {
+  font-weight: 300; }
+
 .indicator_section div {
   width: 20px;
   height: 20px;
