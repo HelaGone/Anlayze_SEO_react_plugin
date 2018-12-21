@@ -101,22 +101,30 @@ class SeoAnalysis extends Component{
 				<PluginSidebarMoreMenuItem target="seo-analysis">
 					{ __('SEO Analysis') }
 				</PluginSidebarMoreMenuItem>
-				<PluginSidebar name="seo-analysis" title={__( 'Seo Analysis' )}>
-					<PanelBody>
-						<label for="objective_words">Objective Words</label><br/>
+				<PluginSidebar name="seo-analysis" title={__( 'Seo Analysis', 'analyze-seo' )}>
+					<PanelBody className="seo-analysis-panel">
+						<label for="objective_words">{__('Objective Words', 'analyze-seo')}</label><br/>
 						<input name="objective_words" value={this.state.objective_words.value} onChange={this.handleInputChange}/><br/>
-						<label for="title_tag">Title Tag</label><br/>
+						<em>{__('This should be at least 4 words', 'analyze-seo')}</em><br/>
+
+						<label for="title_tag">{__('Title Tag', 'analyze-seo')}</label><br/>
 						<input name="title_tag" value={this.state.title_tag.value} onChange={this.handleInputChange}/><br/>
-						<label for="meta_description">Meta Description</label><br/>
+						<em>{__('It should be between 6 and 8 words long and it hasn\'t have more than 60 characters', 'analyze-seo')}</em><br/>
+
+						<label for="meta_description">{__('Meta Description', 'analyze-seo')}</label><br/>
 						<textarea name="meta_description" onChange={this.handleInputChange} rows="5" placeholder="Meta description">
 							{this.state.meta_description.value}
 						</textarea><br/>
-						<label for="meta_keywords">Meta Keywords</label><br/>
+						<em>{__('It should be between 12 and 24 words long', 'analyze-seo')}</em><br/>
+
+						<label for="meta_keywords">{__('Meta Keywords', 'analyze-seo')}</label><br/>
 						<textarea name="meta_keywords" onChange={this.handleInputChange} rows="5" placeholder="Meta keywords">
 							{this.state.meta_keywords.value}
 						</textarea>
+						<em>{__('It should be between 6 and 12 words long', 'analyze-seo')}</em><br/>
+
 						<div className="indicator_section">
-							<h2>Word Count & Word Match</h2>
+							<h2>{__('Word Count & Word Match', 'analyze-seo')}</h2>
 						</div>
 					</PanelBody>
 				</PluginSidebar>

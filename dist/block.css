@@ -1,1 +1,7 @@
 /* That SaSS! */
+.seo-analysis-panel input, .seo-analysis-panel textarea {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.5); }
+
+.seo-analysis-panel em {
+  color: tomato; }

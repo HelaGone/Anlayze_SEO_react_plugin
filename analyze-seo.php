@@ -8,17 +8,18 @@
  * Version: 1.0.0
  * License: GPL2+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
- *
+ * Text Domain: analyze-seo
+ * Domain Path: /languages 
  * @package analyze-seo
  */
 
-define( 'WP_SEO_PATH', dirname( __FILE__ ) );
-define( 'WP_SEO_URL', trailingslashit( plugins_url( '', __FILE__ ) ) );
+define( 'SEO_ANALYSIS_PATH', dirname( __FILE__ ) );
+define( 'SEO_ANALYSIS_URL', trailingslashit( plugins_url( '', __FILE__ ) ) );
 
 //  Exit if accessed directly.
 defined('ABSPATH') || exit;
 
-include_once WP_SEO_PATH . '/includes/seo-metaboxes.php';
+include_once SEO_ANALYSIS_PATH . '/includes/seo-metaboxes.php';
 
 /**
  * Enqueue front end and editor JavaScript and CSS
@@ -44,5 +45,6 @@ function analyze_seo_scripts() {
     );
 
 }
-// Hook scripts function into block editor hook
-add_action('enqueue_block_assets', 'analyze_seo_scripts');
+// Enqueue scripts in all admin pages
+// add_action('enqueue_block_assets', 'analyze_seo_scripts');
+add_action('enqueue_block_editor_assets', 'analyze_seo_scripts');
