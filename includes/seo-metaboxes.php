@@ -20,6 +20,11 @@ function register_seo_metaboxes(){
     register_meta('post', 'title_tag', $args);
     register_meta('post', 'meta_description', $args);
     register_meta('post', 'meta_keywords', $args);
+    
+    register_meta('post', 'objective_words_cc', $args);
+    register_meta('post', 'title_tag_cc', $args);
+    register_meta('post', 'meta_description_cc', $args);
+    register_meta('post', 'meta_keywords_cc', $args);
 }
 add_action('init', 'register_seo_metaboxes');
 

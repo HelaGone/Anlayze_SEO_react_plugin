@@ -1,3 +1,15 @@
 /* That SaSS! */
+$bad:#cc3300;
+$soso:#ffcc00;
+$good:#99cc33;
+$clear:#3399cc;
+
 .seo-analysis-panel input, .seo-analysis-panel textarea{width:100%;border:1px solid rgba(0,0,0,0.5);}
 .seo-analysis-panel em{color:tomato;}
+
+.red{background-color:$bad;}
+.orange{background-color:$soso;}
+.green{background-color:$good;}
+.blue{background-color:$clear;}
+
+.indicator_section div{width:20px; height:20px; border-radius: 50%;}

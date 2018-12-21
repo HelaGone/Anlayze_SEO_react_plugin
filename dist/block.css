@@ -5,3 +5,20 @@
 
 .seo-analysis-panel em {
   color: tomato; }
+
+.red {
+  background-color: #cc3300; }
+
+.orange {
+  background-color: #ffcc00; }
+
+.green {
+  background-color: #99cc33; }
+
+.blue {
+  background-color: #3399cc; }
+
+.indicator_section div {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%; }
