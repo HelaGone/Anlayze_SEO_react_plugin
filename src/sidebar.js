@@ -196,23 +196,23 @@ class SeoAnalysis extends Component{
 					<PanelBody className="seo-analysis-panel">
 						<label for="objective_words">{__('Objective Words', 'analyze-seo')}</label><br/>
 						<input name="objective_words" value={this.state.objective_words.meta.value} onChange={this.handleInputChange}/><br/>
-						<em>{__('This should be at least 4 words', 'analyze-seo')}</em><br/>
+						<em>{__('This should be at least 4 words', 'analyze-seo')}</em><br/><br/>
 
 						<label for="title_tag">{__('Title Tag', 'analyze-seo')}</label><br/>
 						<input name="title_tag" value={this.state.title_tag.meta.value} onChange={this.handleInputChange}/><br/>
-						<em>{__('It should be between 6 and 8 words long and it hasn\'t have more than 60 characters', 'analyze-seo')}</em><br/>
+						<em>{__('It should be between 6 and 8 words long and it hasn\'t have more than 60 characters', 'analyze-seo')}</em><br/><br/>
 
 						<label for="meta_description">{__('Meta Description', 'analyze-seo')}</label><br/>
 						<textarea name="meta_description" onChange={this.handleInputChange} rows="5" placeholder="Meta description">
 							{this.state.meta_description.meta.value}
 						</textarea><br/>
-						<em>{__('It should be between 12 and 24 words long', 'analyze-seo')}</em><br/>
+						<em>{__('It should be between 12 and 24 words long', 'analyze-seo')}</em><br/><br/>
 
 						<label for="meta_keywords">{__('Meta Keywords', 'analyze-seo')}</label><br/>
 						<textarea name="meta_keywords" onChange={this.handleInputChange} rows="5" placeholder="Meta keywords">
 							{this.state.meta_keywords.meta.value}
 						</textarea>
-						<em>{__('It should be between 6 and 12 words long', 'analyze-seo')}</em><br/>
+						<em>{__('It should be between 6 and 12 words long', 'analyze-seo')}</em><br/><br/>
 
 						<div className="indicator_section">
 							<h2>{__('Word Count & Word Match', 'analyze-seo')}</h2>
