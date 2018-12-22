@@ -134,6 +134,10 @@ class SeoAnalysis extends Component{
 		}
 		if(nextProps.isAutoSaving){
 			console.log('auto save');
+			let paragraph_content = nextProps.postContent;
+			let cleanStr = paragraph_content.replace(/<[^>]*>/g, '');
+			let word_arr = cleanStr.split(' ');
+			console.log(word_arr.length);
 		}
 	}//End getDerivedStateFromProps
 
@@ -267,12 +271,13 @@ class SeoAnalysis extends Component{
 
 //Higer-Order-Component
 const HOC = withSelect((select, {forceIsSaving})=>{
-	const { getCurrentPostId, isSavingPost, isPublishingPost, isAutosavingPost } = select('core/editor');
+	const { getCurrentPostId, isSavingPost, isPublishingPost, isAutosavingPost, getEditedPostAttribute } = select('core/editor');
 	return {
 		postId: getCurrentPostId(),
 		isSaving: forceIsSaving || isSavingPost(),
 		isAutoSaving: isAutosavingPost(),
-		isPublishing: isPublishingPost()
+		isPublishing: isPublishingPost(),
+		postContent: getEditedPostAttribute('content')
 	};
 })( SeoAnalysis );
 
