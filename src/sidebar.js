@@ -136,7 +136,9 @@ class SeoAnalysis extends Component{
 			let content = nextProps.postContent;
 			let cleanStr = content.replace(/<[^>]*>/g, '');
 			let word_arr = cleanStr.split(' ');
-			console.log(word_arr.length);
+			//console.log(word_arr.length);
+
+			console.log(nextProps.ftImage);
 		}
 	}//End getDerivedStateFromProps
 
