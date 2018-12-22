@@ -133,9 +133,8 @@ class SeoAnalysis extends Component{
 			}
 		}
 		if(nextProps.isAutoSaving){
-			console.log('auto save');
-			let paragraph_content = nextProps.postContent;
-			let cleanStr = paragraph_content.replace(/<[^>]*>/g, '');
+			let content = nextProps.postContent;
+			let cleanStr = content.replace(/<[^>]*>/g, '');
 			let word_arr = cleanStr.split(' ');
 			console.log(word_arr.length);
 		}
