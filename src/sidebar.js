@@ -7,91 +7,60 @@ const {PanelBody,TextControl, TextareaControl} = wp.components;
 const {Component,Fragment} = wp.element;
 const {withSelect} = wp.data;
 const {registerPlugin} = wp.plugins;
+const {hasChangedContent, getEditedPostAttribute} = wp.data.select('core/editor');
 
 import Signal from './components/signal.js';
 import Match from './components/match.js';
 
 
 class SeoAnalysis extends Component{
-
 	constructor(props){
 		super(props);
 		this.state = {
 			objective_words: {
 				meta:{key: '',value: ''},
-				color_code: {
-					key: 'objective_words_cc',
-					value: 'red'
-				}
+				color_code: {key: 'objective_words_cc',value: 'red'}
 			},
 			title_tag: {
 				meta:{key: '',value: ''},
-				color_code: {
-					key: 'title_tag_cc',
-					value: 'red'
-				}
+				color_code: {key: 'title_tag_cc',value: 'red'}
 			},
 			meta_description: {
 				meta:{key: '',value: ''},
-				color_code: {
-					key: 'meta_description_cc',
-					value: 'red'
-				}
+				color_code: {key: 'meta_description_cc',value: 'red'}
 			},
 			meta_keywords: {
 				meta:{key: '',value: ''},
-				color_code: {
-					key: 'meta_keywords_cc',
-					value: 'red'
-				}
+				color_code: {key: 'meta_keywords_cc',value: 'red'}
+			},
+			body_content: {
+				color_code:{key: 'body_content_cc',value: ''}
 			}
 		}//End state
 
 		wp.apiFetch({
 			path: `/wp/v2/posts/${this.props.postId}`,
 			method: 'GET'
-		})
-		.then( (data) => {
+		}).then( (data) => {
 			this.setState({
 				objective_words: {
-					meta:{
-						key: 'objective_words',
-						value: data.meta.objective_words
-					},
-					color_code:{
-						key: 'objective_words_cc', 
-						value: data.meta.objective_words_cc
-					}
+					meta:{key: 'objective_words',value: data.meta.objective_words},
+					color_code:{key: 'objective_words_cc', value: data.meta.objective_words_cc}
 				}, 
 				title_tag: {
-					meta: {
-						key: 'title_tag',
-						value: data.meta.title_tag
-					},
-					color_code:{
-						key: 'title_tag_cc', 
-						value: data.meta.title_tag_cc
-					}
+					meta: {key: 'title_tag',value: data.meta.title_tag},
+					color_code:{key: 'title_tag_cc', value: data.meta.title_tag_cc}
 				},
 				meta_description: {
-					meta:{
-						key: 'meta_description',
-						value: data.meta.meta_description
-					},
-					color_code:{
-						key: 'meta_description_cc', 
-						value: data.meta.meta_description_cc
-					}
+					meta:{key: 'meta_description',value: data.meta.meta_description},
+					color_code:{key: 'meta_description_cc', value: data.meta.meta_description_cc}
 				},
 				meta_keywords: {
-					meta:{
-						key: 'meta_keywords',
-						value: data.meta.meta_keywords
-					},
-					color_code:{
-						key: 'meta_keywords_cc', 
-						value: data.meta.meta_keywords_cc
-					}
+					meta:{key: 'meta_keywords',value: data.meta.meta_keywords},
+					color_code:{key: 'meta_keywords_cc', value: data.meta.meta_keywords_cc}
+				},
+				body_content: {
+					color_code:{key: 'body_content_cc',value: data.meta.body_content_cc}
 				}
 			});
 			return data; 
@@ -100,12 +69,14 @@ class SeoAnalysis extends Component{
 		});
 
 		this.handleInputChange = this.handleInputChange.bind(this);
-	}
+
+	}//End constructor
 
 	static getDerivedStateFromProps(nextProps, state){
 		if( (nextProps.isPublishing || nextProps.isSaving) && !nextProps.isAutoSaving ){
 			let arr_state = Object.values(state);
 			for(let i = 0; i<arr_state.length; i++ ){
+				// console.log(arr_state[i].color_code);
 				if(arr_state[i].meta){
 					wp.apiRequest({
 						path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
@@ -114,6 +85,7 @@ class SeoAnalysis extends Component{
 					})
 					.then((data)=>{
 						if(arr_state[i].color_code){
+							// console.log(arr_state[i].color_code);
 							wp.apiRequest({
 								path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
 								method: 'POST',
@@ -131,16 +103,41 @@ class SeoAnalysis extends Component{
 					});
 				}
 			}
-		}
-		if(nextProps.isAutoSaving){
-			let content = nextProps.postContent;
-			let cleanStr = content.replace(/<[^>]*>/g, '');
-			let word_arr = cleanStr.split(' ');
-			//console.log(word_arr.length);
+		}//end if is saving || is publishing
 
-			console.log(nextProps.ftImage);
-		}
 	}//End getDerivedStateFromProps
+
+	componentDidUpdate(prevProps){
+		// console.log(prevProps);
+		let content = getEditedPostAttribute('content');
+		let cleanStr = content.replace(/<[^>]*>/g, '');
+		let word_arr = cleanStr.split(' ');
+		let color_code = '';
+
+		if(word_arr.length < 300){
+			color_code = 'red';
+			console.log(color_code);
+		}else if(word_arr.length >= 300 && word_arr.length < 400){
+			color_code = 'orange';
+			console.log(color_code);
+		}else{
+			color_code = 'green';
+			console.log(color_code);
+		}
+
+		if(prevProps.isSaving){
+			console.log(`saving and setting state: ${color_code}`);
+			this.setState({
+				body_content:{
+					color_code:{
+						key: 'body_content_cc',
+						value: color_code
+					}
+				}
+			});
+		}
+
+	}//End component did update
 
 	handleInputChange(event){
 		const target = event.target;
@@ -167,6 +164,12 @@ class SeoAnalysis extends Component{
 			}else{
 				color_code = 'red';
 			}
+		}else if(name === 'title_tag'){
+			if(value_count.length < 6 || value_count.length > 8){
+				color_code = 'red';
+			}else if(value_count.length >= 6 && value_count.length <= 8){
+				color_code = 'green';
+			}
 		}else{
 			if(value_count.length >= 6 && value_count.length <= 12){
 				color_code = 'green';
@@ -189,7 +192,7 @@ class SeoAnalysis extends Component{
 			}
 		});
 
-	}
+	}//end handle input change
 
 	render(){
 		return(
@@ -252,7 +255,7 @@ class SeoAnalysis extends Component{
 									</tr>
 									<tr>
 										<td>Body Content</td>
-										<td><Signal status_count="red" /></td>
+										<td><Signal status_count={this.state.body_content.color_code.value} /></td>
 										<td><Match status_match="red" /></td>
 									</tr>
 									<tr>
@@ -270,6 +273,7 @@ class SeoAnalysis extends Component{
 	}
 }
 
+
 //Higer-Order-Component
 const HOC = withSelect((select, {forceIsSaving})=>{
 	const { getCurrentPostId, isSavingPost, isPublishingPost, isAutosavingPost, getEditedPostAttribute } = select('core/editor');
@@ -277,8 +281,7 @@ const HOC = withSelect((select, {forceIsSaving})=>{
 		postId: getCurrentPostId(),
 		isSaving: forceIsSaving || isSavingPost(),
 		isAutoSaving: isAutosavingPost(),
-		isPublishing: isPublishingPost(),
-		postContent: getEditedPostAttribute('content')
+		isPublishing: isPublishingPost()
 	};
 })( SeoAnalysis );
 
