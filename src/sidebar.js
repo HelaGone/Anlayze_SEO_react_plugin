@@ -8,6 +8,7 @@ const {Component,Fragment} = wp.element;
 const {withSelect} = wp.data;
 const {registerPlugin} = wp.plugins;
 const {hasChangedContent, getEditedPostAttribute} = wp.data.select('core/editor');
+const {getMedia} = wp.data.select('core');
 
 import Signal from './components/signal.js';
 import Match from './components/match.js';
@@ -34,7 +35,10 @@ class SeoAnalysis extends Component{
 				color_code: {key: 'meta_keywords_cc',value: 'red'}
 			},
 			body_content: {
-				color_code:{key: 'body_content_cc',value: ''}
+				color_code:{key: 'body_content_cc',value: 'red'}
+			},
+			alt_attibute:{
+				color_code: {key: 'alt_attibute_cc', value: 'red'}
 			}
 		}//End state
 
@@ -61,6 +65,9 @@ class SeoAnalysis extends Component{
 				},
 				body_content: {
 					color_code:{key: 'body_content_cc',value: data.meta.body_content_cc}
+				},
+				alt_attibute:{
+					color_code: {key: 'alt_attibute_cc', value: data.meta.alt_attibute_cc}
 				}
 			});
 			return data; 
@@ -105,10 +112,14 @@ class SeoAnalysis extends Component{
 			}
 		}//end if is saving || is publishing
 
+		if(nextProps.isTyping){
+			console.log('is typing');
+		}
+
 	}//End getDerivedStateFromProps
 
 	componentDidUpdate(prevProps){
-		// console.log(prevProps);
+		console.log('did update');
 		let content = getEditedPostAttribute('content');
 		let cleanStr = content.replace(/<[^>]*>/g, '');
 		let word_arr = cleanStr.split(' ');
@@ -116,13 +127,26 @@ class SeoAnalysis extends Component{
 
 		if(word_arr.length < 300){
 			color_code = 'red';
-			console.log(color_code);
 		}else if(word_arr.length >= 300 && word_arr.length < 400){
 			color_code = 'orange';
-			console.log(color_code);
 		}else{
 			color_code = 'green';
-			console.log(color_code);
+		}
+
+		let ftImageId = getEditedPostAttribute('featured_media');
+		let ftImg = getMedia(ftImageId);
+		let fti_color_code = '';
+		if(ftImg !== undefined){
+			let alt_text_arr = ftImg.alt_text.split(' ');
+			if(alt_text_arr.length !== 0){
+				if(alt_text_arr.length < 4 && alt_text_arr.length > 6){
+					fti_color_code = 'red';
+					console.log(fti_color_code);
+				}else if(alt_text_arr.length >= 4 && alt_text_arr.length <= 6){
+					fti_color_code = 'green';
+					console.log(fti_color_code);
+				}
+			}
 		}
 
 		if(prevProps.isSaving){
@@ -132,6 +156,12 @@ class SeoAnalysis extends Component{
 					color_code:{
 						key: 'body_content_cc',
 						value: color_code
+					}
+				},
+				alt_attibute: {
+					color_code:{
+						key: 'alt_attibute_cc',
+						value: fti_color_code
 					}
 				}
 			});
@@ -143,10 +173,7 @@ class SeoAnalysis extends Component{
 		const target = event.target;
 		const value = target.value;
 		const name = target.name;
-
 		let value_count = target.value.split(' ');
-		//console.log(value_count.length);
-
 		let color_code = '';
 		if(name === 'objective_words'){
 			if(value_count.length === 4){
@@ -260,7 +287,7 @@ class SeoAnalysis extends Component{
 									</tr>
 									<tr>
 										<td>Image Alt Text</td>
-										<td><Signal status_count="red" /></td>
+										<td><Signal status_count={this.state.alt_attibute.color_code.value} /></td>
 										<td><Match status_match="red" /></td>
 									</tr>
 								</tbody>
@@ -276,12 +303,13 @@ class SeoAnalysis extends Component{
 
 //Higer-Order-Component
 const HOC = withSelect((select, {forceIsSaving})=>{
-	const { getCurrentPostId, isSavingPost, isPublishingPost, isAutosavingPost, getEditedPostAttribute } = select('core/editor');
+	const { getCurrentPostId, isSavingPost, isPublishingPost, isAutosavingPost, getEditedPostAttribute, isTyping } = select('core/editor');
 	return {
 		postId: getCurrentPostId(),
 		isSaving: forceIsSaving || isSavingPost(),
 		isAutoSaving: isAutosavingPost(),
-		isPublishing: isPublishingPost()
+		isPublishing: isPublishingPost(),
+		isTyping: isTyping()
 	};
 })( SeoAnalysis );
 

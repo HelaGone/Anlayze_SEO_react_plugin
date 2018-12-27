@@ -27,6 +27,7 @@ function register_seo_metaboxes(){
     register_meta('post', 'meta_keywords_cc', $args);
 
     register_meta('post', 'body_content_cc', $args);
+    register_meta('post', 'alt_attribute_cc', $args);
 }
 add_action('init', 'register_seo_metaboxes');
 
