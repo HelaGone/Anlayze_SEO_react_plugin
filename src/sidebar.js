@@ -37,8 +37,8 @@ class SeoAnalysis extends Component{
 			body_content: {
 				color_code:{key: 'body_content_cc',value: 'red'}
 			},
-			alt_attibute:{
-				color_code: {key: 'alt_attibute_cc', value: 'red'}
+			alt_attribute:{
+				color_code: {key: 'alt_attribute_cc', value: 'red'}
 			}
 		}//End state
 
@@ -46,6 +46,7 @@ class SeoAnalysis extends Component{
 			path: `/wp/v2/posts/${this.props.postId}`,
 			method: 'GET'
 		}).then( (data) => {
+			// console.log(data.meta);
 			this.setState({
 				objective_words: {
 					meta:{key: 'objective_words',value: data.meta.objective_words},
@@ -66,8 +67,8 @@ class SeoAnalysis extends Component{
 				body_content: {
 					color_code:{key: 'body_content_cc',value: data.meta.body_content_cc}
 				},
-				alt_attibute:{
-					color_code: {key: 'alt_attibute_cc', value: data.meta.alt_attibute_cc}
+				alt_attribute:{
+					color_code: {key: 'alt_attribute_cc', value: data.meta.alt_attribute_cc}
 				}
 			});
 			return data; 
@@ -80,9 +81,11 @@ class SeoAnalysis extends Component{
 	}//End constructor
 
 	static getDerivedStateFromProps(nextProps, state){
+		// console.log(state);
 		if( (nextProps.isPublishing || nextProps.isSaving) && !nextProps.isAutoSaving ){
 			let arr_state = Object.values(state);
 			for(let i = 0; i<arr_state.length; i++ ){
+				// console.log('derived sfp');
 				// console.log(arr_state[i].color_code);
 				if(arr_state[i].meta){
 					wp.apiRequest({
@@ -92,7 +95,7 @@ class SeoAnalysis extends Component{
 					})
 					.then((data)=>{
 						if(arr_state[i].color_code){
-							// console.log(arr_state[i].color_code);
+							// console.log(arr_state[i]);
 							wp.apiRequest({
 								path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
 								method: 'POST',
@@ -120,54 +123,61 @@ class SeoAnalysis extends Component{
 
 	componentDidUpdate(prevProps){
 		console.log('did update');
-		let content = getEditedPostAttribute('content');
-		let cleanStr = content.replace(/<[^>]*>/g, '');
-		let word_arr = cleanStr.split(' ');
-		let color_code = '';
 
-		if(word_arr.length < 300){
-			color_code = 'red';
-		}else if(word_arr.length >= 300 && word_arr.length < 400){
-			color_code = 'orange';
-		}else{
-			color_code = 'green';
-		}
+		// let content = getEditedPostAttribute('content');
+		// let cleanStr = content.replace(/<[^>]*>/g, '');
+		// let word_arr = cleanStr.split(' ');
+		// let color_code = '';
 
-		let ftImageId = getEditedPostAttribute('featured_media');
-		let ftImg = getMedia(ftImageId);
-		let fti_color_code = '';
-		if(ftImg !== undefined){
-			let alt_text_arr = ftImg.alt_text.split(' ');
-			if(alt_text_arr.length !== 0){
-				if(alt_text_arr.length < 4 && alt_text_arr.length > 6){
-					fti_color_code = 'red';
-					console.log(fti_color_code);
-				}else if(alt_text_arr.length >= 4 && alt_text_arr.length <= 6){
-					fti_color_code = 'green';
-					console.log(fti_color_code);
-				}
-			}
-		}
+		// if(word_arr.length < 300){
+		// 	color_code = 'red';
+		// }else if(word_arr.length >= 300 && word_arr.length < 400){
+		// 	color_code = 'orange';
+		// }else{
+		// 	color_code = 'green';
+		// }
 
-		if(prevProps.isSaving){
-			console.log(`saving and setting state: ${color_code}`);
-			this.setState({
-				body_content:{
-					color_code:{
-						key: 'body_content_cc',
-						value: color_code
-					}
-				},
-				alt_attibute: {
-					color_code:{
-						key: 'alt_attibute_cc',
-						value: fti_color_code
-					}
-				}
-			});
-		}
+		// let ftImageId = getEditedPostAttribute('featured_media');
+		// let ftImg = getMedia(ftImageId);
+		// let fti_color_code = '';
+		// if(ftImg !== undefined){
+		// 	let alt_text_arr = ftImg.alt_text.split(' ');
+		// 	if(alt_text_arr.length !== 0){
+		// 		if(alt_text_arr.length < 4 && alt_text_arr.length > 6){
+		// 			fti_color_code = 'red';
+		// 			// console.log(fti_color_code);
+		// 		}else if(alt_text_arr.length >= 4 && alt_text_arr.length <= 6){
+		// 			fti_color_code = 'green';
+		// 			// console.log(fti_color_code);
+		// 		}
+		// 	}
+		// }
+
+		// if(this.state.alt_attribute.color_code.value !== fti_color_code){
+
+		// 	console.log(`saving and setting state: ${fti_color_code}`);
+
+		// 	this.setState({
+		// 		body_content:{
+		// 			color_code:{
+		// 				key: 'body_content_cc',
+		// 				value: color_code
+		// 			}
+		// 		},
+		// 		alt_attribute: {
+		// 			color_code:{
+		// 				key: 'alt_attribute_cc',
+		// 				value: fti_color_code
+		// 			}
+		// 		}
+		// 	});
+		// }
 
 	}//End component did update
+
+	componentDidMount(){
+		console.log('did mount');
+	}
 
 	handleInputChange(event){
 		const target = event.target;
@@ -287,7 +297,7 @@ class SeoAnalysis extends Component{
 									</tr>
 									<tr>
 										<td>Image Alt Text</td>
-										<td><Signal status_count={this.state.alt_attibute.color_code.value} /></td>
+										<td><Signal status_count={this.state.alt_attribute.color_code.value} /></td>
 										<td><Match status_match="red" /></td>
 									</tr>
 								</tbody>
