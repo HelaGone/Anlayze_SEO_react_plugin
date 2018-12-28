@@ -7,8 +7,7 @@ const {PanelBody,TextControl, TextareaControl} = wp.components;
 const {Component,Fragment} = wp.element;
 const {withSelect} = wp.data;
 const {registerPlugin} = wp.plugins;
-// const {hasChangedContent, getEditedPostAttribute} = wp.data.select('core/editor');
-// const {getMedia} = wp.data.select('core');
+const {addAction} = wp.hooks;
 
 import Signal from './components/signal.js';
 import Match from './components/match.js';
@@ -17,6 +16,11 @@ import Match from './components/match.js';
 class SeoAnalysis extends Component{
 	constructor(props){
 		super(props);
+		console.log('constructor');
+
+		//Binding methods
+		this.handleInputChange = this.handleInputChange.bind(this);
+
 		this.state = {
 			objective_words: {
 				meta:{key: '',value: ''},
@@ -76,52 +80,20 @@ class SeoAnalysis extends Component{
 			return err;
 		});
 
-		this.handleInputChange = this.handleInputChange.bind(this);
+		//addAction('the_content', 'analyze-seo/content_word_count', )
 
 	}//End constructor
 
-	static getDerivedStateFromProps(nextProps, state){
-		if( (nextProps.isPublishing || nextProps.isSaving) && !nextProps.isAutoSaving ){
-			let arr_state = Object.values(state);
-			for(let i = 0; i<arr_state.length; i++ ){
-				if(arr_state[i].meta){
-					wp.apiRequest({
-						path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
-						method: 'POST',
-						data: arr_state[i].meta
-					})
-					.then((data)=>{
-						if(arr_state[i].color_code){
-							wp.apiRequest({
-								path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
-								method: 'POST',
-								data: arr_state[i].color_code
-							})
-							.then((data)=>{
-								return data;
-							},(err)=>{
-								return err;
-							});
-						}
-						return data;
-					},(err)=>{
-						return err;
-					});
-				}
-			}
-		}//end if is saving || is publishing
-
-	}//End getDerivedStateFromProps
 
 	componentDidUpdate(prevProps, state){
 		console.log('did update');
 
 		if(prevProps.isSaving || prevProps.isPublishing){
-			console.log('saving or publishing');
-			console.log(prevProps);
-			console.log('------');
-			console.log(state);
-			console.log('*------*');
+			// console.log('saving or publishing');
+			// console.log(prevProps);
+			// console.log('------');
+			// console.log(state);
+			// console.log('*------*');
 			if(prevProps.media !== undefined && prevProps.content_count !== ''){
 				let color_code = '';
 				let fti_color_code = '';
@@ -145,8 +117,10 @@ class SeoAnalysis extends Component{
 					}
 				}
 
-				if(state.body_content.color_code !== color_code){
-					console.log('condition');
+				if(state.body_content.color_code !== this.color_code){
+					// console.log('condition');
+					// console.log(state);
+					// console.log(`${color_code} && ${fti_color_code}`);
 					this.setState({
 						body_content: {
 							color_code: {key: 'body_content_cc', value: color_code}
@@ -156,12 +130,51 @@ class SeoAnalysis extends Component{
 						}
 					});
 
-					console.log('*--Condition--*');
+					// console.log('*--Condition--*');
 				}
 			}
 		}
-
 	}//End component did update
+
+
+	static getDerivedStateFromProps(nextProps, state){
+		console.log('derived state');
+		const {alt_attribute, body_content} = state;
+		if( (nextProps.isPublishing || nextProps.isSaving) && !nextProps.isAutoSaving ){
+			let arr_state = Object.values(state);
+			for(let i = 0; i<arr_state.length; i++ ){
+				if(arr_state[i].meta){
+					wp.apiRequest({
+						path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
+						method: 'POST',
+						data: arr_state[i].meta
+					})
+					.then((data)=>{
+						if(arr_state[i].color_code){
+							// console.log('*--v--*');
+							// console.log(alt_attribute);
+							// console.log('*--^--*');
+							wp.apiRequest({
+								path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
+								method: 'POST',
+								data: arr_state[i].color_code
+							})
+							.then((data)=>{
+								return data;
+							},(err)=>{
+								return err;
+							});
+						}
+						return data;
+					},(err)=>{
+						return err;
+					});
+				}
+			}
+		}//end if is saving || is publishing
+
+	}//End getDerivedStateFromProps
+
 
 	handleInputChange(event){
 		const target = event.target;
@@ -212,10 +225,10 @@ class SeoAnalysis extends Component{
 				}
 			}
 		});
-
 	}//end handle input change
 
 	render(){
+		console.log('render');
 		return(
 			<Fragment>
 				<PluginSidebarMoreMenuItem target="seo-analysis">
@@ -292,7 +305,8 @@ class SeoAnalysis extends Component{
 			</Fragment>
 		);
 	}
-}//End Class Def
+}//End Class Definition
+
 
 //Higer-Order-Component
 const HOC = withSelect((select, {forceIsSaving})=>{
