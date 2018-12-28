@@ -7,8 +7,8 @@ const {PanelBody,TextControl, TextareaControl} = wp.components;
 const {Component,Fragment} = wp.element;
 const {withSelect} = wp.data;
 const {registerPlugin} = wp.plugins;
-const {hasChangedContent, getEditedPostAttribute} = wp.data.select('core/editor');
-const {getMedia} = wp.data.select('core');
+// const {hasChangedContent, getEditedPostAttribute} = wp.data.select('core/editor');
+// const {getMedia} = wp.data.select('core');
 
 import Signal from './components/signal.js';
 import Match from './components/match.js';
@@ -81,12 +81,9 @@ class SeoAnalysis extends Component{
 	}//End constructor
 
 	static getDerivedStateFromProps(nextProps, state){
-		// console.log(state);
 		if( (nextProps.isPublishing || nextProps.isSaving) && !nextProps.isAutoSaving ){
 			let arr_state = Object.values(state);
 			for(let i = 0; i<arr_state.length; i++ ){
-				// console.log('derived sfp');
-				// console.log(arr_state[i].color_code);
 				if(arr_state[i].meta){
 					wp.apiRequest({
 						path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
@@ -95,7 +92,6 @@ class SeoAnalysis extends Component{
 					})
 					.then((data)=>{
 						if(arr_state[i].color_code){
-							// console.log(arr_state[i]);
 							wp.apiRequest({
 								path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
 								method: 'POST',
@@ -107,7 +103,7 @@ class SeoAnalysis extends Component{
 								return err;
 							});
 						}
-						//return data;
+						return data;
 					},(err)=>{
 						return err;
 					});
@@ -115,69 +111,57 @@ class SeoAnalysis extends Component{
 			}
 		}//end if is saving || is publishing
 
-		if(nextProps.isTyping){
-			console.log('is typing');
-		}
-
 	}//End getDerivedStateFromProps
 
-	componentDidUpdate(prevProps){
+	componentDidUpdate(prevProps, state){
 		console.log('did update');
 
-		// let content = getEditedPostAttribute('content');
-		// let cleanStr = content.replace(/<[^>]*>/g, '');
-		// let word_arr = cleanStr.split(' ');
-		// let color_code = '';
+		if(prevProps.isSaving || prevProps.isPublishing){
+			console.log('saving or publishing');
+			console.log(prevProps);
+			console.log('------');
+			console.log(state);
+			console.log('*------*');
+			if(prevProps.media !== undefined && prevProps.content_count !== ''){
+				let color_code = '';
+				let fti_color_code = '';
+				let alt_text = prevProps.media.alt_text;
+				let content_count = prevProps.content_count;
 
-		// if(word_arr.length < 300){
-		// 	color_code = 'red';
-		// }else if(word_arr.length >= 300 && word_arr.length < 400){
-		// 	color_code = 'orange';
-		// }else{
-		// 	color_code = 'green';
-		// }
+				if(content_count < 300){
+					color_code = 'red';
+				}else if(content_count >= 300 && content_count < 400){
+					color_code = 'orange';
+				}else{
+					color_code = 'green';
+				}
 
-		// let ftImageId = getEditedPostAttribute('featured_media');
-		// let ftImg = getMedia(ftImageId);
-		// let fti_color_code = '';
-		// if(ftImg !== undefined){
-		// 	let alt_text_arr = ftImg.alt_text.split(' ');
-		// 	if(alt_text_arr.length !== 0){
-		// 		if(alt_text_arr.length < 4 && alt_text_arr.length > 6){
-		// 			fti_color_code = 'red';
-		// 			// console.log(fti_color_code);
-		// 		}else if(alt_text_arr.length >= 4 && alt_text_arr.length <= 6){
-		// 			fti_color_code = 'green';
-		// 			// console.log(fti_color_code);
-		// 		}
-		// 	}
-		// }
+				let alt_text_arr = alt_text.split(' ');
+				if(alt_text_arr.length !== 0){
+					if(alt_text_arr.length < 4 && alt_text_arr.length > 6){
+						fti_color_code = 'red';
+					}else if(alt_text_arr.length >= 4 && alt_text_arr.length <= 6){
+						fti_color_code = 'green';
+					}
+				}
 
-		// if(this.state.alt_attribute.color_code.value !== fti_color_code){
+				if(state.body_content.color_code !== color_code){
+					console.log('condition');
+					this.setState({
+						body_content: {
+							color_code: {key: 'body_content_cc', value: color_code}
+						},
+						alt_attribute:{
+							color_code: {key: 'alt_attribute_cc', value: fti_color_code}
+						}
+					});
 
-		// 	console.log(`saving and setting state: ${fti_color_code}`);
-
-		// 	this.setState({
-		// 		body_content:{
-		// 			color_code:{
-		// 				key: 'body_content_cc',
-		// 				value: color_code
-		// 			}
-		// 		},
-		// 		alt_attribute: {
-		// 			color_code:{
-		// 				key: 'alt_attribute_cc',
-		// 				value: fti_color_code
-		// 			}
-		// 		}
-		// 	});
-		// }
+					console.log('*--Condition--*');
+				}
+			}
+		}
 
 	}//End component did update
-
-	componentDidMount(){
-		console.log('did mount');
-	}
 
 	handleInputChange(event){
 		const target = event.target;
@@ -308,19 +292,27 @@ class SeoAnalysis extends Component{
 			</Fragment>
 		);
 	}
-}
-
+}//End Class Def
 
 //Higer-Order-Component
 const HOC = withSelect((select, {forceIsSaving})=>{
+	const {getMedia} = select('core');
 	const { getCurrentPostId, isSavingPost, isPublishingPost, isAutosavingPost, getEditedPostAttribute, isTyping } = select('core/editor');
+	const featuredImageId = getEditedPostAttribute('featured_media');
+	const content = getEditedPostAttribute('content');
+	let cleanStr = content.replace(/<[^>]*>/g, '');
+	let word_arr = cleanStr.split(' ');
+
 	return {
 		postId: getCurrentPostId(),
 		isSaving: forceIsSaving || isSavingPost(),
 		isAutoSaving: isAutosavingPost(),
 		isPublishing: isPublishingPost(),
-		isTyping: isTyping()
+		isTyping: isTyping(),
+		media: featuredImageId ? getMedia(featuredImageId) : null,
+		content_count: content ? word_arr.length : null
 	};
+
 })( SeoAnalysis );
 
 registerPlugin( 'seo-analysis-gutenberg', {
