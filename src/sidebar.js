@@ -13,6 +13,7 @@ import Signal from './components/signal.js';
 import Match from './components/match.js';
 
 class SeoAnalysis extends Component{
+
 	constructor(props){
 		super(props);
 		console.log('constructor');
@@ -78,27 +79,27 @@ class SeoAnalysis extends Component{
 		}, (err) =>{
 			return err;
 		});
-
 	}//End constructor
 
-
 	static getDerivedStateFromProps(nextProps, state){
-		// console.log('derived state');
 		const {alt_attribute, body_content} = state;
 		if( (nextProps.isPublishing || nextProps.isSaving) && !nextProps.isAutoSaving ){
 			let arr_state = Object.values(state);
 			for(let i = 0; i<arr_state.length; i++ ){
+
+
+
 				if(arr_state[i].meta){
+					console.log(arr_state[i]);
 					wp.apiRequest({
 						path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
 						method: 'POST',
 						data: arr_state[i].meta
-					})
-					.then((data)=>{
+					}).then((data)=>{
 						if(arr_state[i].color_code){
-							// console.log('*--v--*');
-							// console.log(alt_attribute);
-							// console.log('*--^--*');
+							// console.log('---v---');
+							// console.log(arr_state[i].color_code);
+							// console.log('---^---');
 							wp.apiRequest({
 								path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
 								method: 'POST',
@@ -110,6 +111,17 @@ class SeoAnalysis extends Component{
 								return err;
 							});
 						}
+						//return data;
+					},(err)=>{
+						return err;
+					});
+				}else if(arr_state[i].color_code){
+					wp.apiRequest({
+						path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
+						method: 'POST',
+						data: arr_state[i].color_code
+					})
+					.then((data)=>{
 						return data;
 					},(err)=>{
 						return err;
@@ -117,9 +129,49 @@ class SeoAnalysis extends Component{
 				}
 			}
 		}//end if is saving || is publishing
-
 	}//End getDerivedStateFromProps
 
+	componentDidUpdate(prevProps, prevState){
+		const {content_count} = prevProps;
+		let color_code = '';
+		if(content_count < 300){
+			color_code = 'red';
+		}else if(content_count > 300 && content_count < 400){
+			color_code = 'orange';
+		}else{
+			color_code = 'green';
+		}
+
+		if(prevState.body_content.color_code.value != color_code){
+			this.setState({
+				body_content: {
+					color_code: { key: 'body_content_cc', value: color_code }
+				}
+			});
+		}
+
+		//Alt Attribute check
+		const {media} = prevProps;
+		if(media !== undefined){
+			let color_code = '';
+			const {alt_text} = media;
+			let alt_text_length = alt_text.split(' ').length;
+			console.log(alt_text_length);
+			if(alt_text_length < 6 || alt_text_length > 12){
+				color_code = 'red';
+			}else if(alt_text_length >= 6 && alt_text_length <= 12){
+				color_code = 'green';
+			}
+
+			if(prevState.alt_attribute.color_code.value !== color_code){
+				this.setState({
+					alt_attribute:{
+						color_code:{key: 'alt_attribute_cc', value: color_code}
+					}
+				});
+			}
+		}
+	}
 
 	handleInputChange(event){
 		const target = event.target;
@@ -249,8 +301,7 @@ class SeoAnalysis extends Component{
 			</Fragment>
 		);
 	}
-}//End Class Definition
-
+};//End Class Definition
 
 //Higer-Order-Component
 const HOC = withSelect((select, {forceIsSaving})=>{
