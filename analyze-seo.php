@@ -48,3 +48,17 @@ function analyze_seo_scripts() {
 // Enqueue scripts in all admin pages
 // add_action('enqueue_block_assets', 'analyze_seo_scripts');
 add_action('enqueue_block_editor_assets', 'analyze_seo_scripts');
+
+if(!function_exists('currentpost_title_tag')){
+    function currentpost_title_tag($title){
+        global $wp_query;
+        if(is_single()){
+            $post_object = $wp_query->queried_object;
+            $post_id = $post_object->ID;
+            $title_tag = get_post_meta($post_id, 'title_tag', true);
+            return $title_tag;
+        }
+        return $title;
+    }
+    add_action('pre_get_document_title', 'currentpost_title_tag', 10, 1);
+}

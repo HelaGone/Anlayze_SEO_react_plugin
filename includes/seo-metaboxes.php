@@ -60,3 +60,4 @@ add_action('rest_api_init', 'register_api_post_meta');
 function update_metaboxes_callback($data){
     return update_post_meta($data['id'], $data['key'], $data['value']);
 }
+
