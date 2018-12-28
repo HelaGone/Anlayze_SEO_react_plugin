@@ -12,7 +12,6 @@ const {addAction} = wp.hooks;
 import Signal from './components/signal.js';
 import Match from './components/match.js';
 
-
 class SeoAnalysis extends Component{
 	constructor(props){
 		super(props);
@@ -80,65 +79,11 @@ class SeoAnalysis extends Component{
 			return err;
 		});
 
-		//addAction('the_content', 'analyze-seo/content_word_count', )
-
 	}//End constructor
 
 
-	componentDidUpdate(prevProps, state){
-		console.log('did update');
-
-		if(prevProps.isSaving || prevProps.isPublishing){
-			// console.log('saving or publishing');
-			// console.log(prevProps);
-			// console.log('------');
-			// console.log(state);
-			// console.log('*------*');
-			if(prevProps.media !== undefined && prevProps.content_count !== ''){
-				let color_code = '';
-				let fti_color_code = '';
-				let alt_text = prevProps.media.alt_text;
-				let content_count = prevProps.content_count;
-
-				if(content_count < 300){
-					color_code = 'red';
-				}else if(content_count >= 300 && content_count < 400){
-					color_code = 'orange';
-				}else{
-					color_code = 'green';
-				}
-
-				let alt_text_arr = alt_text.split(' ');
-				if(alt_text_arr.length !== 0){
-					if(alt_text_arr.length < 4 && alt_text_arr.length > 6){
-						fti_color_code = 'red';
-					}else if(alt_text_arr.length >= 4 && alt_text_arr.length <= 6){
-						fti_color_code = 'green';
-					}
-				}
-
-				if(state.body_content.color_code !== this.color_code){
-					// console.log('condition');
-					// console.log(state);
-					// console.log(`${color_code} && ${fti_color_code}`);
-					this.setState({
-						body_content: {
-							color_code: {key: 'body_content_cc', value: color_code}
-						},
-						alt_attribute:{
-							color_code: {key: 'alt_attribute_cc', value: fti_color_code}
-						}
-					});
-
-					// console.log('*--Condition--*');
-				}
-			}
-		}
-	}//End component did update
-
-
 	static getDerivedStateFromProps(nextProps, state){
-		console.log('derived state');
+		// console.log('derived state');
 		const {alt_attribute, body_content} = state;
 		if( (nextProps.isPublishing || nextProps.isSaving) && !nextProps.isAutoSaving ){
 			let arr_state = Object.values(state);
@@ -228,7 +173,6 @@ class SeoAnalysis extends Component{
 	}//end handle input change
 
 	render(){
-		console.log('render');
 		return(
 			<Fragment>
 				<PluginSidebarMoreMenuItem target="seo-analysis">
