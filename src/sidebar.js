@@ -16,7 +16,6 @@ class SeoAnalysis extends Component{
 
 	constructor(props){
 		super(props);
-		console.log('constructor');
 
 		//Binding methods
 		this.handleInputChange = this.handleInputChange.bind(this);
@@ -86,20 +85,13 @@ class SeoAnalysis extends Component{
 		if( (nextProps.isPublishing || nextProps.isSaving) && !nextProps.isAutoSaving ){
 			let arr_state = Object.values(state);
 			for(let i = 0; i<arr_state.length; i++ ){
-
-
-
 				if(arr_state[i].meta){
-					console.log(arr_state[i]);
 					wp.apiRequest({
 						path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
 						method: 'POST',
 						data: arr_state[i].meta
 					}).then((data)=>{
 						if(arr_state[i].color_code){
-							// console.log('---v---');
-							// console.log(arr_state[i].color_code);
-							// console.log('---^---');
 							wp.apiRequest({
 								path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
 								method: 'POST',
@@ -152,11 +144,11 @@ class SeoAnalysis extends Component{
 
 		//Alt Attribute check
 		const {media} = prevProps;
-		if(media !== undefined){
+		console.log(typeof(media));
+		if(media !== undefined && media !== null){
 			let color_code = '';
 			const {alt_text} = media;
 			let alt_text_length = alt_text.split(' ').length;
-			console.log(alt_text_length);
 			if(alt_text_length < 6 || alt_text_length > 12){
 				color_code = 'red';
 			}else if(alt_text_length >= 6 && alt_text_length <= 12){
@@ -199,6 +191,13 @@ class SeoAnalysis extends Component{
 			if(value_count.length < 6 || value_count.length > 8){
 				color_code = 'red';
 			}else if(value_count.length >= 6 && value_count.length <= 8){
+				color_code = 'green';
+			}
+		}else if(name === 'meta_keywords'){
+			let keyword_count = target.value.split(',');
+			if(keyword_count.length < 6 || keyword_count.length > 12){
+				color_code = 'red';
+			}else if(keyword_count.length >= 6 || keyword_count.length <= 12){
 				color_code = 'green';
 			}
 		}else{
