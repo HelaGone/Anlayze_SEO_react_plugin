@@ -49,6 +49,12 @@ function analyze_seo_scripts() {
 // add_action('enqueue_block_assets', 'analyze_seo_scripts');
 add_action('enqueue_block_editor_assets', 'analyze_seo_scripts');
 
+
+/**
+ * [currentpost_title_tag] Updates the title tag in single post
+ * @param [string] $title
+ * @return [String] $title || $title_tag
+*/
 if(!function_exists('currentpost_title_tag')){
     function currentpost_title_tag($title){
         global $wp_query;
@@ -62,3 +68,29 @@ if(!function_exists('currentpost_title_tag')){
     }
     add_action('pre_get_document_title', 'currentpost_title_tag', 10, 1);
 }
+
+/**
+ * [update_head_meta] Insert meta tags in document header
+ * @param [null]
+ * 
+*/
+if(!function_exists('update_head_meta')){
+    function update_head_meta(){
+        global $wp_query;
+        if(is_single()):
+            $post_object = $wp_query->queried_object;
+            $post_id = $post_object->ID;
+            $keywords = get_post_meta($post_id, 'meta_keywords', true);
+            $meta_description = get_post_meta($post_id, 'meta_description', true); 
+            if($keywords !== '' || $meta_description !== ''): ?>
+                <meta name="keywords" content="<?php echo esc_attr($keywords); ?>" />
+                <meta name="description" content="<?php echo esc_attr($meta_description); ?>">
+<?php
+            endif;
+        endif;
+    }
+    add_action('wp_head', 'update_head_meta', 10, 1);
+}
+
+
+
