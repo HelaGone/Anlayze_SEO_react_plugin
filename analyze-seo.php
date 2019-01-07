@@ -344,7 +344,6 @@ if(!function_exists('currentpost_title_tag')){
 /**
  * Render a <meta /> field.
  *
- * @access private.
  *
  * @param  string $name  The content of the "name" attribute.
  * @param  string $content The content of the "content" attribute.
@@ -376,6 +375,18 @@ if(!function_exists('update_head_meta')){
 <?php
             endif;
         }else if(is_category()){
+            if ( Taxonomy_settings()->has_term_fields( $taxonomy = get_queried_object()->taxonomy ) && $option = get_option( get_term_option_name( get_queried_object() ) ) ) {
+                $meta_description = $option['description'];
+                $meta_keywords = $option['keywords'];
+            }
+            $key = "archive_{$taxonomy}";
+        }else if(is_tag()){
+            if ( Taxonomy_settings()->has_term_fields( $taxonomy = get_queried_object()->taxonomy ) && $option = get_option( get_term_option_name( get_queried_object() ) ) ) {
+                $meta_description = $option['description'];
+                $meta_keywords = $option['keywords'];
+            }
+            $key = "archive_{$taxonomy}";
+        }else if(is_tax()){
             if ( Taxonomy_settings()->has_term_fields( $taxonomy = get_queried_object()->taxonomy ) && $option = get_option( get_term_option_name( get_queried_object() ) ) ) {
                 $meta_description = $option['description'];
                 $meta_keywords = $option['keywords'];
