@@ -22,8 +22,6 @@ defined('ABSPATH') || exit;
 include_once SEO_ANALYSIS_PATH . '/includes/seo-metaboxes.php';
 include_once SEO_ANALYSIS_PATH . '/php/taxonomy_settings.php';
 
-
-
 /**
  * Enqueue front end and editor JavaScript and CSS
  */
@@ -58,8 +56,21 @@ add_action('enqueue_block_editor_assets', 'analyze_seo_scripts');
  * Taxonomy SEO fields
 */
 
+
+/**
+ * The regular expression used to find formatting tags.
+ *
+ * @var string.
+ */
+$formatting_tag_pattern = '';
+
 if(is_admin()){
+    add_action('wp_loaded', 'set_properties', 10, 1);
     add_action( 'admin_init', 'add_term_boxes', 10, 1);
+}
+
+function set_properties(){
+    $formatting_tag_pattern = apply_filters( 'wp_seo_formatting_tag_pattern', '/#[a-zA-Z\_]+#/' );
 }
 
 /**
@@ -194,7 +205,7 @@ function save_term_fields( $term_id, $tt_id, $taxonomy ) {
         return;
     }
 
-    if ( !has_term_fields( $taxonomy ) ) {
+    if ( !Taxonomy_settings()->has_term_fields( $taxonomy ) ) {
         return;
     }
 
@@ -231,6 +242,58 @@ function save_term_fields( $term_id, $tt_id, $taxonomy ) {
     }
 }
 
+/**
+ * Replace formatting tags in a string with their value for the current page.
+ *
+ * @param  string $string  The string with formatting tags.
+ * @return string|WP_Error The formatted string, or WP_Error on error.
+ */
+function format( $string ) {
+    if ( ! is_string( $string ) ) {
+        return new WP_Error( 'format_error', __( "Please don't try to format() a non-string.", 'wp-seo' ) );
+    }
+
+    $raw_string = $string;
+
+    preg_match_all( $this->formatting_tag_pattern, $string, $matches );
+    if ( empty( $matches[0] ) ) {
+        return $string;
+    }
+
+    $replacements = array();
+    $unique_matches = array_unique( $matches[0] );
+
+    foreach( $this->formatting_tags as $id => $tag ) {
+        if ( ! empty( $tag->tag ) && in_array( $tag->tag, $unique_matches ) ) {
+            /**
+             * Filter the value of a formatting tag for the current page.
+             *
+             * The dynamic portion of the hook name, $id, refers to the key
+             * used to register the tag in WP_SEO::set_properties(). For
+             * example, the hook for the default "#site_name#" formatting
+             * tag is 'wp_seo_format_site_name'.
+             *
+             * @see wp_seo_default_formatting_tags() for the defaults' keys.
+             *
+             * @param  string The value returned by the formatting tag.
+             */
+            $replacements[ $tag->tag ] = apply_filters( "wp_seo_format_{$id}", $tag->get_value() );
+        }
+    }
+
+    if ( ! empty( $replacements ) ) {
+        $string = str_replace( array_keys( $replacements ), array_values( $replacements ), $string );
+    }
+
+    /**
+     * Filter the formatted string.
+     *
+     * @param  string $string       The formatted string.
+     * @param  string $raw_string   The string as submitted.
+     */
+    return apply_filters( 'wp_seo_after_format_string', $string, $raw_string );
+}
+
 
 /**
  * [currentpost_title_tag] Updates the title tag in single post
@@ -245,12 +308,53 @@ if(!function_exists('currentpost_title_tag')){
             $post_id = $post_object->ID;
             $title_tag = get_post_meta($post_id, 'title_tag', true);
             return $title_tag;
-        }else if(is_category() || is_tag() || is_tax() ){
-
+        }else if(is_category()){
+            if ( ( Taxonomy_settings()->has_term_fields( $taxonomy = get_queried_object()->taxonomy ) ) && ( $option = get_option( get_term_option_name( get_queried_object() ) ) ) && ( ! empty( $option['title'] ) ) ) {
+                return $option['title'];
+            } else {
+                $key = "archive_{$taxonomy}_title";
+            }
+        }else if(is_tag()){
+            if ( ( Taxonomy_settings()->has_term_fields( $taxonomy = get_queried_object()->taxonomy ) ) && ( $option = get_option( get_term_option_name( get_queried_object() ) ) ) && ( ! empty( $option['title'] ) ) ) {
+                return $option['title'];
+            } else {
+                $key = "archive_{$taxonomy}_title";
+            }
         }
+
+        if($key){
+            /**
+             * Filter the format string of the title tag for the current page.
+             *
+             * @param  string       The format string retrieved from the settings.
+             * @param  string $key  The key of the setting retrieved.
+             */
+            $title_string = apply_filters( 'wp_seo_title_tag_format', Taxonomy_settings()->get_option( $key ), $key );
+            $title_tag = format( $title_string );
+            if ( $title_tag && ! is_wp_error( $title_tag ) ) {
+                $title = $title_tag;
+            }
+        }
+
         return $title;
     }
     add_action('pre_get_document_title', 'currentpost_title_tag', 10, 1);
+}
+
+/**
+ * Render a <meta /> field.
+ *
+ * @access private.
+ *
+ * @param  string $name  The content of the "name" attribute.
+ * @param  string $content The content of the "content" attribute.
+ */
+function meta_field( $name, $content ) {
+    if ( ! is_string( $name ) || ! is_string( $content ) ) {
+        return;
+    }
+
+    echo "<meta name='" . esc_attr( $name ) . "' content='" . esc_attr( $content ) . "' />\n";
 }
 
 /**
@@ -261,17 +365,56 @@ if(!function_exists('currentpost_title_tag')){
 if(!function_exists('update_head_meta')){
     function update_head_meta(){
         global $wp_query;
-        if(is_single()):
+        if(is_single()){
             $post_object = $wp_query->queried_object;
             $post_id = $post_object->ID;
             $keywords = get_post_meta($post_id, 'meta_keywords', true);
             $meta_description = get_post_meta($post_id, 'meta_description', true); 
-            if($keywords !== '' || $meta_description !== ''): ?>
+            if($keywords !== '' && $meta_description !== ''): ?>
                 <meta name="keywords" content="<?php echo esc_attr($keywords); ?>" />
                 <meta name="description" content="<?php echo esc_attr($meta_description); ?>">
 <?php
             endif;
-        endif;
+        }else if(is_category()){
+            if ( Taxonomy_settings()->has_term_fields( $taxonomy = get_queried_object()->taxonomy ) && $option = get_option( get_term_option_name( get_queried_object() ) ) ) {
+                $meta_description = $option['description'];
+                $meta_keywords = $option['keywords'];
+            }
+            $key = "archive_{$taxonomy}";
+        }
+
+        if ( $key ) {
+            if ( empty( $meta_description ) ) {
+                /**
+                 * Filter the format string of the meta description for this page.
+                 *
+                 * @param  string       The format string retrieved from the settings.
+                 * @param  string $key  The key of the setting retrieved.
+                 */
+                $description_string = apply_filters( 'wp_seo_meta_description_format', Taxonomy_settings()->get_option( "{$key}_description" ), $key );
+                $meta_description = format( $description_string );
+            }
+
+            if ( $meta_description && ! is_wp_error( $meta_description ) ) {
+                meta_field( 'description', $meta_description );
+            }
+
+            if ( empty( $meta_keywords ) ) {
+                /**
+                 * Filter the format string of the meta keywords for this page.
+                 *
+                 * @param  string       The format string retrieved from the settings.
+                 * @param  string $key  The key of the setting retrieved.
+                 */
+                $keywords_string = apply_filters( 'wp_seo_meta_keywords_format', Taxonomy_settings()->get_option( "{$key}_keywords" ), $key );
+                $meta_keywords = format( $keywords_string );
+            }
+
+            if ( $meta_keywords && ! is_wp_error( $meta_keywords ) ) {
+                meta_field( 'keywords', $meta_keywords );
+            }
+        }
+
     }
     add_action('wp_head', 'update_head_meta', 10, 1);
 }
