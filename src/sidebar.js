@@ -402,7 +402,8 @@ class SeoAnalysis extends Component{
 
 //checking ow matches in haystack
 const check_match = (ow, haystack) => {
-	const ow_arr = ow.split(', ');
+	const ow_lower = ow.toLowerCase();
+	const ow_arr = ow_lower.split(', ');
 	const haystack_clean = haystack.replace(',', '').replace('.', '').replace(';', '').replace(':', '').replace('"', '').toLowerCase();
 	const haystack_arr = haystack_clean.split(' ');
 	const intersection = ow_arr.map(word => haystack_arr.includes(word));
