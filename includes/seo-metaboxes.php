@@ -30,13 +30,13 @@ function register_seo_metaboxes(){
     register_meta('post', 'alt_attribute_cc', $args);
     register_meta('post', 'permalink_cc', $args);
 
-    register_meta('post', 'match_ow', $args);
-    register_meta('post', 'match_tt', $args);
-    register_meta('post', 'match_md', $args);
-    register_meta('post', 'match_mk', $args);
-    register_meta('post', 'match_bc', $args);
-    register_meta('post', 'match_aa', $args);
-    register_meta('post', 'match_pl', $args);
+    register_meta('post', 'objective_words_mc', $args);
+    register_meta('post', 'title_tag_mc', $args);
+    register_meta('post', 'meta_description_mc', $args);
+    register_meta('post', 'meta_keywords_mc', $args);
+    register_meta('post', 'body_content_mc', $args);
+    register_meta('post', 'alt_attribute_mc', $args);
+    register_meta('post', 'permalink_mc', $args);
 }
 add_action('init', 'register_seo_metaboxes');
 

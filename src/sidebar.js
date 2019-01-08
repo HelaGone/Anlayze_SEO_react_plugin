@@ -23,34 +23,34 @@ class SeoAnalysis extends Component{
 			objective_words: {
 				meta:{key: '',value: ''},
 				color_code: {key: 'objective_words_cc',value: 'red'},
-				match: 'red'
+				match: {key: 'objective_words_mc', value: 'red'}
 			},
 			title_tag: {
 				meta:{key: '',value: ''},
 				color_code: {key: 'title_tag_cc',value: 'red'},
-				match: 'red'
+				match: {key: 'title_tag_mc', value: 'red'}
 			},
 			meta_description: {
 				meta:{key: '',value: ''},
 				color_code: {key: 'meta_description_cc',value: 'red'},
-				match: 'red'
+				match: {key: 'meta_description_mc', value: 'red'}
 			},
 			meta_keywords: {
 				meta:{key: '',value: ''},
 				color_code: {key: 'meta_keywords_cc',value: 'red'},
-				match: 'red'
+				match: {key: 'meta_keywords_mc', value: 'red'}
 			},
 			body_content: {
 				color_code:{key: 'body_content_cc',value: 'red'},
-				match: 'red'
+				match: {key: 'body_content_mc', value: 'red'}
 			},
 			alt_attribute:{
 				color_code: {key: 'alt_attribute_cc', value: 'red'},
-				match: 'red'
+				match: {key: 'alt_attribute_mc', value: 'red'}
 			},
 			permalink: {
 				color_code: {key:'permalink_cc', value: 'red'},
-				match: 'red'
+				match: {key: 'permalink_mc', value: 'red'}
 			}
 		}//End state
 
@@ -58,39 +58,39 @@ class SeoAnalysis extends Component{
 			path: `/wp/v2/posts/${this.props.postId}`,
 			method: 'GET'
 		}).then( (data) => {
-			// console.log(data.meta);
+			console.log(data.meta);
 			this.setState({
 				objective_words: {
-					meta:{key: 'objective_words',value: (data.meta.objective_words) ? data.meta.objective_words : 'red'},
+					meta:{key: 'objective_words',value: (data.meta.objective_words) ? data.meta.objective_words : ''},
 					color_code:{key: 'objective_words_cc', value: (data.meta.objective_words_cc) ? data.meta.objective_words_cc : 'red'},
-					match: (data.meta.match_ow) ? data.meta.match_ow : 'red'
+					match: {key: 'objective_words_mc', value: (data.meta.objective_words_mc) ? data.meta.objective_words_mc : 'red'}
 				}, 
 				title_tag: {
-					meta: {key: 'title_tag',value: (data.meta.title_tag) ? data.meta.title_tag : 'red'},
+					meta: {key: 'title_tag',value: (data.meta.title_tag) ? data.meta.title_tag : ''},
 					color_code:{key: 'title_tag_cc', value: (data.meta.title_tag_cc) ? data.meta.title_tag_cc : 'red'},
-					match: (data.meta.match_tt) ? data.meta.match_tt : 'red'
+					match: {key: 'title_tag_mc', value: (data.meta.title_tag_mc) ? data.meta.title_tag_mc : 'red'}
 				},
 				meta_description: {
-					meta:{key: 'meta_description',value: (data.meta.meta_description) ? data.meta.meta_description : 'red'},
+					meta:{key: 'meta_description',value: (data.meta.meta_description) ? data.meta.meta_description : ''},
 					color_code:{key: 'meta_description_cc', value: (data.meta.meta_description_cc) ? data.meta.meta_description_cc : 'red'},
-					match: (data.meta.match_md) ? data.meta.match_md : 'red'
+					match: {key: 'meta_description_mc', value: (data.meta.meta_description_mc) ? data.meta.meta_description_mc : 'red'}
 				},
 				meta_keywords: {
-					meta:{key: 'meta_keywords',value: (data.meta.meta_keywords) ? data.meta.meta_keywords : 'red'},
+					meta:{key: 'meta_keywords',value: (data.meta.meta_keywords) ? data.meta.meta_keywords : ''},
 					color_code:{key: 'meta_keywords_cc', value: (data.meta.meta_keywords_cc) ? data.meta.meta_keywords_cc : 'red'},
-					match: (data.meta.match_mk) ? data.meta.match_mk : 'red'
+					match: {key: 'meta_keywords_mc', value: (data.meta.meta_keywords_mc) ? data.meta.meta_keywords_mc : 'red'}
 				},
 				body_content: {
 					color_code:{key: 'body_content_cc',value: (data.meta.body_content_cc) ? data.meta.body_content_cc : 'red'},
-					match: (data.meta.match_bc) ? data.meta.match_bc : 'red'
+					match: {key: 'body_content_mc', value: (data.meta.body_content_mc) ? data.meta.body_content_mc : 'red'}
 				},
 				alt_attribute:{
 					color_code: {key: 'alt_attribute_cc', value: (data.meta.alt_attribute_cc) ? data.meta.alt_attribute_cc : 'red' },
-					match: (data.meta.match_aa) ? data.meta.match_aa : 'red'
+					match: {key: 'alt_attribute_mc', value: (data.meta.alt_attribute_mc) ? data.meta.alt_attribute_mc : 'red'}
 				},
 				permalink: {
 					color_code: {key: 'permalink_cc', value: (data.meta.permalink_cc) ?  data.meta.permalink_cc : 'red'},
-					match: (data.meta.match_pl) ? data.meta.match_pl : 'red'
+					match: {key: 'permalink_mc', value:(data.meta.permalink_mc) ? data.meta.permalink_mc : 'red'}
 				}
 			});
 			return data; 
@@ -102,7 +102,30 @@ class SeoAnalysis extends Component{
 	static getDerivedStateFromProps(nextProps, state){
 		if( (nextProps.isPublishing || nextProps.isSaving) && !nextProps.isAutoSaving ){
 			let arr_state = Object.values(state);
-			for(let i = 0; i<arr_state.length; i++ ){
+			const iterate = arr_state.map(element => {
+				let nobj = [element.meta, element.color_code, element.match];
+				return nobj;
+			});
+
+			for(let i=0; i<iterate.length; i++){
+				for(let j=0; j<iterate[i].length; j++){
+					if(iterate[i][j] !== undefined){
+						let actual_data = iterate[i][j];
+						console.log(actual_data);
+						wp.apiRequest({
+							path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
+							method: 'POST',
+							data: actual_data
+						}).then((data)=>{
+							return data;
+						},(err)=>{
+							return err;
+						});
+					}//end if
+				}//end for 2
+			}//end for 1
+			
+			/*for(let i = 0; i<arr_state.length; i++ ){
 				if(arr_state[i].meta){
 					wp.apiRequest({
 						path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
@@ -136,7 +159,7 @@ class SeoAnalysis extends Component{
 					},(err)=>{
 						return err;
 					});
-				}else{
+				}else if(arr_state[i].match){
 					wp.apiRequest({
 						path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
 						method: 'POST',
@@ -148,13 +171,16 @@ class SeoAnalysis extends Component{
 						return err;
 					});
 				}
-			}
+			}*/
+
 		}//end if is saving || is publishing
 	}//End getDerivedStateFromProps
 
 	componentDidUpdate(prevProps, prevState){
 		const {objective_words} = prevState;
-		const {content_count, actual_content} = prevProps;
+
+		//Body Content
+		/*const {content_count, actual_content} = prevProps;
 		if(content_count !== undefined && content_count !== 0){
 			let color_code = '';
 			let match_color = '';
@@ -173,18 +199,21 @@ class SeoAnalysis extends Component{
 				match_color = 'red';
 			}
 
-			if(prevState.body_content.color_code.value != color_code || prevState.body_content.match !== match_color){
+			if(color_code !== prevState.body_content.color_code.value){
+				console.log('diff');
+				console.log(`State: ${prevState.body_content.color_code.value} - color code: ${color_code}`);
+				console.log(`Match: ${prevState.body_content.match.value} - match Color: ${match_color}`);
+
 				this.setState({
 					body_content: {
-						color_code: { key: 'body_content_cc', value: color_code },
-						match: match_color
+						color_code: { key: 'body_content_cc', value: color_code }
 					}
 				});
 			}
-		}
+		}*/
 
 		//Alt Attribute check
-		const {media} = prevProps;
+		/*const {media} = prevProps;
 		if(media !== undefined && media !== null){
 			let color_code = '';
 			const {alt_text} = media;
@@ -203,47 +232,48 @@ class SeoAnalysis extends Component{
 				match_color = 'red';
 			}
 
-			if(prevState.alt_attribute.color_code.value !== color_code || prevState.alt_attribute.match !== match_color){
+			if(prevState.alt_attribute.color_code.value !== color_code || prevState.alt_attribute.match.value !== match_color){
 				this.setState({
 					alt_attribute:{
 						color_code:{key: 'alt_attribute_cc', value: color_code},
-						match: match_color
+						match: {key: 'match_aa', value: match_color}
 					}
 				});
 			}
-		}
+		}*/
 
 		//Permalink Check
-		const {permalink} = prevProps;
+		/*const {permalink} = prevProps;
 		if(permalink !== undefined && permalink !== null){
 			let color_code = '';
 			const regexp = /([a-z0-9\-]{1,})\/$/;
 			let slug = regexp.exec(permalink);
-			let arr_slug = slug[1].split('-');
+			if(slug !== null){
+				let arr_slug = slug[1].split('-');
+				if(arr_slug.length >= 6 && arr_slug.length <= 12){
+					color_code = 'green';
+				}else{
+					color_code = 'red';
+				}
 
-			if(arr_slug.length >= 6 && arr_slug.length <= 12){
-				color_code = 'green';
-			}else{
-				color_code = 'red';
-			}
+				const permalink_check = check_match(objective_words.meta.value, slug[1]);
+				let match_color = '';
+				if(permalink_check){
+					match_color = 'green';
+				}else{
+					match_color = 'red';
+				}
 
-			const permalink_check = check_match(objective_words.meta.value, slug[1]);
-			let match_color = '';
-			if(permalink_check){
-				match_color = 'green';
-			}else{
-				match_color = 'red';
+				if(prevState.permalink.color_code.value !== color_code || prevState.permalink.match !== match_color){
+					this.setState({
+						permalink: {
+							color_code: {key: 'permalink_cc', value: color_code},
+							match: {key: 'match_pl', value: match_color}
+						}
+					});
+				}
 			}
-
-			if(prevState.permalink.color_code.value !== color_code || prevState.permalink.match !== match_color){
-				this.setState({
-					permalink: {
-						color_code: {key: 'permalink_cc', value: color_code},
-						match: match_color
-					}
-				});
-			}
-		}
+		}*/
 
 	}//end did update
 
@@ -256,9 +286,10 @@ class SeoAnalysis extends Component{
 		let match_color = '';
 		const obj_wds = this.state.objective_words.meta.value;
 		if(name === 'objective_words'){
-			if(value_count.length === 4){
+			let ow_count = target.value.split(', ')
+			if(ow_count.length === 4){
 				color_code = 'green';
-			}else if(value_count.length < 4 && value_count.length < 1){
+			}else if(ow_count.length < 4 && ow_count.length > 1){
 				color_code = 'orange';
 			}else{
 				color_code = 'red';
@@ -272,9 +303,9 @@ class SeoAnalysis extends Component{
 				color_code = 'red';
 			}
 		}else if(name === 'title_tag'){
-			if(value_count.length < 6 || value_count.length > 8){
+			if(value_count.length < 6 || value_count.length > 12){
 				color_code = 'red';
-			}else if(value_count.length >= 6 && value_count.length <= 8){
+			}else if(value_count.length >= 6 && value_count.length <= 12){
 				color_code = 'green';
 			}
 		}else if(name === 'meta_keywords'){
@@ -310,7 +341,10 @@ class SeoAnalysis extends Component{
 					key: `${[name]}_cc`,
 					value: color_code 
 				},
-				match: match_color
+				match: {
+					key:`${[name]}_mc`, 
+					value: match_color
+				}
 			}
 		});
 	}//end handle input change
@@ -329,7 +363,7 @@ class SeoAnalysis extends Component{
 
 						<label for="title_tag">{__('Title Tag', 'analyze-seo')}</label><br/>
 						<input name="title_tag" value={this.state.title_tag.meta.value} onChange={this.handleInputChange}/><br/>
-						<em>{__('It should be between 6 and 8 words long and it hasn\'t have more than 60 characters', 'analyze-seo')}</em><br/><br/>
+						<em>{__('It should be between 6 and 12 words long and it hasn\'t have more than 60 characters', 'analyze-seo')}</em><br/><br/>
 
 						<label for="meta_description">{__('Meta Description', 'analyze-seo')}</label><br/>
 						<textarea name="meta_description" onChange={this.handleInputChange} rows="5" placeholder="Meta description">
@@ -357,37 +391,37 @@ class SeoAnalysis extends Component{
 									<tr>
 										<td>Objective Words</td>
 										<td><Signal status_count={this.state.objective_words.color_code.value} /></td>
-										<td><Match status_match={this.state.objective_words.match} /></td>
+										<td><Match status_match={this.state.objective_words.match.value} /></td>
 									</tr>
 									<tr>
 										<td>Title Tag</td>
 										<td><Signal status_count={this.state.title_tag.color_code.value} /></td>
-										<td><Match status_match={this.state.title_tag.match} /></td>
+										<td><Match status_match={this.state.title_tag.match.value} /></td>
 									</tr>
 									<tr>
 										<td>Meta Description</td>
 										<td><Signal status_count={this.state.meta_description.color_code.value} /></td>
-										<td><Match status_match={this.state.meta_description.match} /></td>
+										<td><Match status_match={this.state.meta_description.match.value} /></td>
 									</tr>
 									<tr>
 										<td>Meta Keywords</td>
 										<td><Signal status_count={this.state.meta_keywords.color_code.value} /></td>
-										<td><Match status_match={this.state.meta_keywords.match} /></td>
+										<td><Match status_match={this.state.meta_keywords.match.value} /></td>
 									</tr>
 									<tr>
 										<td>Body Content</td>
 										<td><Signal status_count={this.state.body_content.color_code.value} /></td>
-										<td><Match status_match={this.state.body_content.match} /></td>
+										<td><Match status_match="red" /></td>
 									</tr>
 									<tr>
 										<td>Image Alt Text</td>
 										<td><Signal status_count={this.state.alt_attribute.color_code.value} /></td>
-										<td><Match status_match={this.state.alt_attribute.match} /></td>
+										<td><Match status_match="red" /></td>
 									</tr>
 									<tr>
 										<td>Permalink</td>
 										<td><Signal status_count={this.state.permalink.color_code.value} /></td>
-										<td><Match status_match={this.state.permalink.match} /></td>
+										<td><Match status_match="red" /></td>
 									</tr>
 								</tbody>
 							</table>
@@ -402,13 +436,16 @@ class SeoAnalysis extends Component{
 
 //checking ow matches in haystack
 const check_match = (ow, haystack) => {
-	const ow_lower = ow.toLowerCase();
-	const ow_arr = ow_lower.split(', ');
-	const haystack_clean = haystack.replace(',', '').replace('.', '').replace(';', '').replace(':', '').replace('"', '').toLowerCase();
-	const haystack_arr = haystack_clean.split(' ');
-	const intersection = ow_arr.map(word => haystack_arr.includes(word));
-	const isMatch = intersection.includes(true);
-	return isMatch;
+	if(ow !== null && haystack !== null){
+		const ow_lower = ow.toLowerCase();
+		const ow_arr = ow_lower.split(', ');
+		const haystack_clean = haystack.replace(',', '').replace('.', '').replace(';', '').replace(':', '').replace('"', '').toLowerCase();
+		const haystack_arr = haystack_clean.split(' ');
+		const intersection = ow_arr.map(word => haystack_arr.includes(word));
+		const isMatch = intersection.includes(true);
+		return isMatch;
+	}
+	return false;
 }
 
 //Higer-Order-Component
