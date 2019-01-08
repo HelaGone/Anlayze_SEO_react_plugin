@@ -28,6 +28,15 @@ function register_seo_metaboxes(){
 
     register_meta('post', 'body_content_cc', $args);
     register_meta('post', 'alt_attribute_cc', $args);
+    register_meta('post', 'permalink_cc', $args);
+
+    register_meta('post', 'match_ow', $args);
+    register_meta('post', 'match_tt', $args);
+    register_meta('post', 'match_md', $args);
+    register_meta('post', 'match_mk', $args);
+    register_meta('post', 'match_bc', $args);
+    register_meta('post', 'match_aa', $args);
+    register_meta('post', 'match_pl', $args);
 }
 add_action('init', 'register_seo_metaboxes');
 
