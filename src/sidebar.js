@@ -173,7 +173,7 @@ class SeoAnalysis extends Component{
 				match_color = 'red';
 			}
 
-			if(prevState.body_content.color_code.value != color_code){
+			if(prevState.body_content.color_code.value != color_code || prevState.body_content.match !== match_color){
 				this.setState({
 					body_content: {
 						color_code: { key: 'body_content_cc', value: color_code },
@@ -203,7 +203,7 @@ class SeoAnalysis extends Component{
 				match_color = 'red';
 			}
 
-			if(prevState.alt_attribute.color_code.value !== color_code){
+			if(prevState.alt_attribute.color_code.value !== color_code || prevState.alt_attribute.match !== match_color){
 				this.setState({
 					alt_attribute:{
 						color_code:{key: 'alt_attribute_cc', value: color_code},
@@ -219,14 +219,15 @@ class SeoAnalysis extends Component{
 			let color_code = '';
 			const regexp = /([a-z0-9\-]{1,})\/$/;
 			let slug = regexp.exec(permalink);
-			let arr_slug = slug[0].split('-');
+			let arr_slug = slug[1].split('-');
+
 			if(arr_slug.length >= 6 && arr_slug.length <= 12){
 				color_code = 'green';
 			}else{
 				color_code = 'red';
 			}
 
-			const permalink_check = check_match(objective_words.meta.value, slug[0]);
+			const permalink_check = check_match(objective_words.meta.value, slug[1]);
 			let match_color = '';
 			if(permalink_check){
 				match_color = 'green';
@@ -234,7 +235,7 @@ class SeoAnalysis extends Component{
 				match_color = 'red';
 			}
 
-			if(prevState.permalink.color_code.value !== color_code){
+			if(prevState.permalink.color_code.value !== color_code || prevState.permalink.match !== match_color){
 				this.setState({
 					permalink: {
 						color_code: {key: 'permalink_cc', value: color_code},
@@ -402,7 +403,7 @@ class SeoAnalysis extends Component{
 //checking ow matches in haystack
 const check_match = (ow, haystack) => {
 	const ow_arr = ow.split(', ');
-	const haystack_clean = haystack.replace(',', '').replace('.', '').replace(';', '').replace(':', '').replace('"', '');
+	const haystack_clean = haystack.replace(',', '').replace('.', '').replace(';', '').replace(':', '').replace('"', '').toLowerCase();
 	const haystack_arr = haystack_clean.split(' ');
 	const intersection = ow_arr.map(word => haystack_arr.includes(word));
 	const isMatch = intersection.includes(true);
