@@ -55,6 +55,13 @@ class Taxonomy_settings{
 
 	public function set_properties(){
 		/**
+		 * Filter the post types that support per-entry SEO fields.
+		 *
+		 * @param array Associative array of post type keys and objects.
+		 */
+		$this->single_post_types = apply_filters( 'wp_seo_single_post_types', wp_list_filter( get_post_types( array( 'public' => true ), 'objects' ), array( 'label' => false ), 'NOT' ) );
+
+		/**
 		 * Filter the taxonomies that support SEO fields on term archive pages.
 		 *
 		 * @param  array Associative array of taxonomy keys and objects.
@@ -69,7 +76,13 @@ class Taxonomy_settings{
 		 *
 		 * @param  array Associative array of setting names and values.
 		 */
-		$this->default_options = apply_filters( 'wp_seo_default_options', array( 'post_types' => array_keys( $this->single_post_types ), 'taxonomies' => array_keys( $this->taxonomies ) ) );
+		$this->default_options = apply_filters( 
+			'wp_seo_default_options', 
+			array( 
+				'post_types' => array_keys( $this->single_post_types ), 
+				'taxonomies' => array_keys( $this->taxonomies )
+			)
+		);
 	}
 
 	/**
@@ -128,6 +141,25 @@ class Taxonomy_settings{
 	 */
 	public function has_term_fields( $taxonomy ) {
 		return in_array( $taxonomy, $this->get_enabled_taxonomies() );
+	}
+
+	/**
+	 * Get the post types with per-entry fields enabled.
+	 *
+	 * @return array With names of any enabled post types.
+	 */
+	public function get_enabled_post_types() {
+		return $this->get_option( 'post_types', array() );
+	}
+
+	/**
+	 * Helper to check whether a post type is set in "Add fields to individual."
+	 *
+	 * @param  string  $post_type Post type name.
+	 * @return boolean
+	 */
+	public function has_post_fields( $post_type ) {
+		return in_array( $post_type, $this->get_enabled_post_types() );
 	}
 
 }//End Class

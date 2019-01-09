@@ -303,23 +303,34 @@ function format( $string ) {
 if(!function_exists('currentpost_title_tag')){
     function currentpost_title_tag($title){
         global $wp_query;
-        if(is_single()){
-            $post_object = $wp_query->queried_object;
-            $post_id = $post_object->ID;
-            $title_tag = get_post_meta($post_id, 'title_tag', true);
-            return $title_tag;
-        }else if(is_category()){
+
+        //Pasted
+        if ( is_singular() ) {
+            if ( Taxonomy_settings()->has_post_fields( $post_type = get_post_type() ) && $meta_title = get_post_meta( get_the_ID(), 'title_tag', true ) ) {
+                return $meta_title;
+            } else {
+                $key = "single_{$post_type}_title";
+            }
+        } elseif ( is_front_page() ) {
+            $key = 'home_title';
+        } elseif ( is_author() ) {
+            $key = 'archive_author_title';
+        } elseif ( is_category() || is_tag() || is_tax() ) {
             if ( ( Taxonomy_settings()->has_term_fields( $taxonomy = get_queried_object()->taxonomy ) ) && ( $option = get_option( get_term_option_name( get_queried_object() ) ) ) && ( ! empty( $option['title'] ) ) ) {
                 return $option['title'];
             } else {
                 $key = "archive_{$taxonomy}_title";
             }
-        }else if(is_tag()){
-            if ( ( Taxonomy_settings()->has_term_fields( $taxonomy = get_queried_object()->taxonomy ) ) && ( $option = get_option( get_term_option_name( get_queried_object() ) ) ) && ( ! empty( $option['title'] ) ) ) {
-                return $option['title'];
-            } else {
-                $key = "archive_{$taxonomy}_title";
-            }
+        } elseif ( is_post_type_archive() ) {
+            $key = 'archive_' . get_queried_object()->name . '_title';
+        } elseif ( is_date() ) {
+            $key = 'archive_date_title';
+        } elseif ( is_search() ) {
+            $key = 'search_title';
+        } elseif ( is_404() ) {
+            $key = '404_title';
+        } else {
+            $key = false;
         }
 
         if($key){
@@ -352,7 +363,6 @@ function meta_field( $name, $content ) {
     if ( ! is_string( $name ) || ! is_string( $content ) ) {
         return;
     }
-
     echo "<meta name='" . esc_attr( $name ) . "' content='" . esc_attr( $content ) . "' />\n";
 }
 
@@ -364,34 +374,31 @@ function meta_field( $name, $content ) {
 if(!function_exists('update_head_meta')){
     function update_head_meta(){
         global $wp_query;
-        if(is_single()){
+        //Pasted
+        if ( is_single() ) {
             $post_object = $wp_query->queried_object;
             $post_id = $post_object->ID;
-            $keywords = get_post_meta($post_id, 'meta_keywords', true);
-            $meta_description = get_post_meta($post_id, 'meta_description', true); 
-            if($keywords !== '' && $meta_description !== ''): ?>
-                <meta name="keywords" content="<?php echo esc_attr($keywords); ?>" />
-                <meta name="description" content="<?php echo esc_attr($meta_description); ?>">
-<?php
-            endif;
-        }else if(is_category()){
+            if ( Taxonomy_settings()->has_post_fields( $post_type = get_post_type() ) ) {
+                $meta_description = get_post_meta( $post_id, 'meta_description', true );
+                $meta_keywords = get_post_meta( $post_id, 'meta_keywords', true );
+            }
+            $key = "single_{$post_type}";
+        } elseif ( is_front_page() ) {
+            $key = 'home';
+        } elseif ( is_author() ) {
+            $key = 'archive_author';
+        } elseif ( is_category() || is_tag() || is_tax() ) {
             if ( Taxonomy_settings()->has_term_fields( $taxonomy = get_queried_object()->taxonomy ) && $option = get_option( get_term_option_name( get_queried_object() ) ) ) {
                 $meta_description = $option['description'];
                 $meta_keywords = $option['keywords'];
             }
             $key = "archive_{$taxonomy}";
-        }else if(is_tag()){
-            if ( Taxonomy_settings()->has_term_fields( $taxonomy = get_queried_object()->taxonomy ) && $option = get_option( get_term_option_name( get_queried_object() ) ) ) {
-                $meta_description = $option['description'];
-                $meta_keywords = $option['keywords'];
-            }
-            $key = "archive_{$taxonomy}";
-        }else if(is_tax()){
-            if ( Taxonomy_settings()->has_term_fields( $taxonomy = get_queried_object()->taxonomy ) && $option = get_option( get_term_option_name( get_queried_object() ) ) ) {
-                $meta_description = $option['description'];
-                $meta_keywords = $option['keywords'];
-            }
-            $key = "archive_{$taxonomy}";
+        } elseif ( is_post_type_archive() ) {
+            $key = 'archive_' . get_queried_object()->name;
+        } elseif ( is_date() ) {
+            $key = 'archive_date';
+        } else {
+            $key = false;
         }
 
         if ( $key ) {
