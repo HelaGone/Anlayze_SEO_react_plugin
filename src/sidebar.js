@@ -146,7 +146,7 @@ class SeoAnalysis extends Component{
 				let match_color = (content_check) ? 'green' : 'red';
 
 				if(color_code !== prevState.body_content.color_code.value || prevState.body_content.match.value !== match_color){
-					console.log(`${match_color} is the color 1`);
+					//console.log(`${match_color} is the color for body content match`);
 					this.setState({
 						body_content: {
 							color_code: { key: 'body_content_cc', value: color_code },
@@ -179,7 +179,7 @@ class SeoAnalysis extends Component{
 				}
 
 				if(color_code !== prevState.alt_attribute.color_code.value || match_color !== prevState.alt_attribute.match.value){
-					console.log(`${match_color} is the color 2`);
+					//console.log(`${match_color} is the color for alt attribute match`);
 					this.setState({
 						alt_attribute:{
 							color_code:{key: 'alt_attribute_cc', value: color_code},
@@ -191,7 +191,7 @@ class SeoAnalysis extends Component{
 		}
 
 		//Permalink Check
-		/*const {permalink} = prevProps;
+		const {permalink} = prevProps;
 		if(permalink !== undefined && permalink !== null){
 			let color_code = '';
 			const regexp = /([a-z0-9\-]{1,})\/$/;
@@ -204,24 +204,29 @@ class SeoAnalysis extends Component{
 					color_code = 'red';
 				}
 
-				const permalink_check = check_match(objective_words.meta.value, slug[1]);
-				let match_color = '';
-				if(permalink_check){
-					match_color = 'green';
-				}else{
-					match_color = 'red';
-				}
+				if(objective_words.meta.value !== null && slug[1] !== null){
+					let clean_slug = slug[1].replace(/\-/g, ' ');
+					const permalink_check = check_match(objective_words.meta.value, clean_slug);
+					let match_color = ''//(permalink_check) ? 'green' : 'red';
 
-				if(prevState.permalink.color_code.value !== color_code || prevState.permalink.match !== match_color){
-					this.setState({
-						permalink: {
-							color_code: {key: 'permalink_cc', value: color_code},
-							match: {key: 'permalink_mc', value: match_color}
-						}
-					});
+					if(permalink_check){
+						match_color = 'green';
+					}else{
+						match_color = 'red';
+					}
+
+					if(color_code !== prevState.permalink.color_code.value || match_color !== prevState.permalink.match.value){
+						console.log(`${match_color} is the color for permalink match`);
+						this.setState({
+							permalink: {
+								color_code: {key: 'permalink_cc', value: color_code},
+								match: {key: 'permalink_mc', value: match_color}
+							}
+						});
+					}
 				}
 			}
-		}*/
+		}
 
 	}//end did update
 
@@ -339,7 +344,7 @@ class SeoAnalysis extends Component{
 									<tr>
 										<td>Objective Words</td>
 										<td><Signal status_count={this.state.objective_words.color_code.value} /></td>
-										<td><Match status_match={this.state.objective_words.match.value} /></td>
+										{/*<td><Match status_match={this.state.objective_words.match.value} /></td>*/}
 									</tr>
 									<tr>
 										<td>Title Tag</td>
@@ -369,7 +374,7 @@ class SeoAnalysis extends Component{
 									<tr>
 										<td>Permalink</td>
 										<td><Signal status_count={this.state.permalink.color_code.value} /></td>
-										<td><Match status_match="red" /></td>
+										<td><Match status_match={this.state.permalink.match.value} /></td>
 									</tr>
 								</tbody>
 							</table>
@@ -384,14 +389,22 @@ class SeoAnalysis extends Component{
 
 //checking ow matches in haystack
 const check_match = (ow, haystack) => {
-	const ow_lower = ow.toLowerCase();
-	const ow_arr = ow_lower.split(', ');
-
-	const haystack_arr = haystack.split(' ');
-
-	const intersection = ow_arr.map(needle => haystack_arr.includes(needle));
-	const isMatch = intersection.includes(true);
-	return isMatch;
+	const ow_arr = ow.toLowerCase().split(', ');
+	const haystack_arr = haystack.toLowerCase().split(' ');
+	// console.log(ow_arr);
+	// console.log(haystack_arr);
+	const intersection = ow_arr.map(needle => {
+		haystack_arr.map((hay)=>{
+			if(needle === hay){
+				console.log(`Needle found: ${needle}`);
+				return true;
+			}
+		})
+		return false;
+		// return haystack_arr.includes(needle);
+	});
+	// const isMatch = intersection.includes(true);
+	return intersection;
 }
 
 //Higer-Order-Component
