@@ -232,7 +232,7 @@ class SeoAnalysis extends Component{
 		let value_count = target.value.split(' ');
 		let color_code = '';
 		let match_color = '';
-		const obj_wds = this.state.objective_words.meta.value;
+		const {objective_words} = this.state;
 		if(name === 'objective_words'){
 			let ow_count = target.value.split(', ')
 			if(ow_count.length === 4){
@@ -272,7 +272,7 @@ class SeoAnalysis extends Component{
 		}
 
 		
-		if(check_match(obj_wds, value)){
+		if(check_match(objective_words.meta.value, value)){
 			match_color = 'green';
 		}else{
 			match_color = 'red';
