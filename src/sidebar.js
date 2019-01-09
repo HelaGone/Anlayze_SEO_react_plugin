@@ -58,7 +58,7 @@ class SeoAnalysis extends Component{
 			path: `/wp/v2/posts/${this.props.postId}`,
 			method: 'GET'
 		}).then( (data) => {
-			console.log(data.meta);
+			// console.log(data.meta);
 			this.setState({
 				objective_words: {
 					meta:{key: 'objective_words',value: (data.meta.objective_words) ? data.meta.objective_words : ''},
@@ -106,12 +106,11 @@ class SeoAnalysis extends Component{
 				let nobj = [element.meta, element.color_code, element.match];
 				return nobj;
 			});
-
 			for(let i=0; i<iterate.length; i++){
 				for(let j=0; j<iterate[i].length; j++){
 					if(iterate[i][j] !== undefined){
 						let actual_data = iterate[i][j];
-						console.log(actual_data);
+						// console.log(actual_data);
 						wp.apiRequest({
 							path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
 							method: 'POST',
@@ -124,55 +123,6 @@ class SeoAnalysis extends Component{
 					}//end if
 				}//end for 2
 			}//end for 1
-			
-			/*for(let i = 0; i<arr_state.length; i++ ){
-				if(arr_state[i].meta){
-					wp.apiRequest({
-						path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
-						method: 'POST',
-						data: arr_state[i].meta
-					}).then((data)=>{
-						if(arr_state[i].color_code){
-							wp.apiRequest({
-								path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
-								method: 'POST',
-								data: arr_state[i].color_code
-							})
-							.then((data)=>{
-								return data;
-							},(err)=>{
-								return err;
-							});
-						}
-						//return data;
-					},(err)=>{
-						return err;
-					});
-				}else if(arr_state[i].color_code){
-					wp.apiRequest({
-						path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
-						method: 'POST',
-						data: arr_state[i].color_code
-					})
-					.then((data)=>{
-						return data;
-					},(err)=>{
-						return err;
-					});
-				}else if(arr_state[i].match){
-					wp.apiRequest({
-						path: `seo-analysis/v2/update-meta?id=${nextProps.postId}`,
-						method: 'POST',
-						data: arr_state[i].match
-					})
-					.then((data)=>{
-						return data;
-					},(err)=>{
-						return err;
-					});
-				}
-			}*/
-
 		}//end if is saving || is publishing
 	}//End getDerivedStateFromProps
 
@@ -180,10 +130,9 @@ class SeoAnalysis extends Component{
 		const {objective_words} = prevState;
 
 		//Body Content
-		/*const {content_count, actual_content} = prevProps;
+		const {content_count, actual_content} = prevProps;
 		if(content_count !== undefined && content_count !== 0){
 			let color_code = '';
-			let match_color = '';
 			if(content_count < 300){
 				color_code = 'red';
 			}else if(content_count > 300 && content_count < 400){
@@ -192,28 +141,24 @@ class SeoAnalysis extends Component{
 				color_code = 'green';
 			}
 
-			const content_check = check_match(objective_words.meta.value, actual_content);
-			if(content_check){
-				match_color = 'green';
-			}else{
-				match_color = 'red';
-			}
+			if(objective_words.meta.value !== null && actual_content !== null){
+				const content_check = check_match(objective_words.meta.value, actual_content);
+				let match_color = (content_check) ? 'green' : 'red';
 
-			if(color_code !== prevState.body_content.color_code.value){
-				console.log('diff');
-				console.log(`State: ${prevState.body_content.color_code.value} - color code: ${color_code}`);
-				console.log(`Match: ${prevState.body_content.match.value} - match Color: ${match_color}`);
-
-				this.setState({
-					body_content: {
-						color_code: { key: 'body_content_cc', value: color_code }
-					}
-				});
+				if(color_code !== prevState.body_content.color_code.value || prevState.body_content.match.value !== match_color){
+					console.log(`${match_color} is the color 1`);
+					this.setState({
+						body_content: {
+							color_code: { key: 'body_content_cc', value: color_code },
+							match: {key: 'body_content_mc', value: match_color}
+						}
+					});
+				}
 			}
-		}*/
+		}
 
 		//Alt Attribute check
-		/*const {media} = prevProps;
+		const {media} = prevProps;
 		if(media !== undefined && media !== null){
 			let color_code = '';
 			const {alt_text} = media;
@@ -225,22 +170,25 @@ class SeoAnalysis extends Component{
 				color_code = 'green';
 			}
 
-			const alt_check = check_match(objective_words.meta.value, alt_text);
-			if(alt_check){
-				match_color = 'green';
-			}else{
-				match_color = 'red';
-			}
+			if(objective_words.meta.value !== null && alt_text !== null){
+				const alt_check = check_match(objective_words.meta.value, alt_text);
+				if(alt_check){
+					match_color = 'green';
+				}else{
+					match_color = 'red';
+				}
 
-			if(prevState.alt_attribute.color_code.value !== color_code || prevState.alt_attribute.match.value !== match_color){
-				this.setState({
-					alt_attribute:{
-						color_code:{key: 'alt_attribute_cc', value: color_code},
-						match: {key: 'match_aa', value: match_color}
-					}
-				});
+				if(color_code !== prevState.alt_attribute.color_code.value || match_color !== prevState.alt_attribute.match.value){
+					console.log(`${match_color} is the color 2`);
+					this.setState({
+						alt_attribute:{
+							color_code:{key: 'alt_attribute_cc', value: color_code},
+							match: {key: 'alt_attribute_mc', value: match_color}
+						}
+					});
+				}
 			}
-		}*/
+		}
 
 		//Permalink Check
 		/*const {permalink} = prevProps;
@@ -268,7 +216,7 @@ class SeoAnalysis extends Component{
 					this.setState({
 						permalink: {
 							color_code: {key: 'permalink_cc', value: color_code},
-							match: {key: 'match_pl', value: match_color}
+							match: {key: 'permalink_mc', value: match_color}
 						}
 					});
 				}
@@ -309,7 +257,7 @@ class SeoAnalysis extends Component{
 				color_code = 'green';
 			}
 		}else if(name === 'meta_keywords'){
-			let keyword_count = target.value.split(',');
+			let keyword_count = target.value.split(', ');
 			if(keyword_count.length < 6 || keyword_count.length > 12){
 				color_code = 'red';
 			}else if(keyword_count.length >= 6 || keyword_count.length <= 12){
@@ -411,12 +359,12 @@ class SeoAnalysis extends Component{
 									<tr>
 										<td>Body Content</td>
 										<td><Signal status_count={this.state.body_content.color_code.value} /></td>
-										<td><Match status_match="red" /></td>
+										<td><Match status_match={this.state.body_content.match.value} /></td>
 									</tr>
 									<tr>
 										<td>Image Alt Text</td>
 										<td><Signal status_count={this.state.alt_attribute.color_code.value} /></td>
-										<td><Match status_match="red" /></td>
+										<td><Match status_match={this.state.alt_attribute.match.value} /></td>
 									</tr>
 									<tr>
 										<td>Permalink</td>
@@ -436,16 +384,14 @@ class SeoAnalysis extends Component{
 
 //checking ow matches in haystack
 const check_match = (ow, haystack) => {
-	if(ow !== null && haystack !== null){
-		const ow_lower = ow.toLowerCase();
-		const ow_arr = ow_lower.split(', ');
-		const haystack_clean = haystack.replace(',', '').replace('.', '').replace(';', '').replace(':', '').replace('"', '').toLowerCase();
-		const haystack_arr = haystack_clean.split(' ');
-		const intersection = ow_arr.map(word => haystack_arr.includes(word));
-		const isMatch = intersection.includes(true);
-		return isMatch;
-	}
-	return false;
+	const ow_lower = ow.toLowerCase();
+	const ow_arr = ow_lower.split(', ');
+
+	const haystack_arr = haystack.split(' ');
+
+	const intersection = ow_arr.map(needle => haystack_arr.includes(needle));
+	const isMatch = intersection.includes(true);
+	return isMatch;
 }
 
 //Higer-Order-Component
@@ -455,7 +401,7 @@ const HOC = withSelect((select, {forceIsSaving})=>{
 	const featuredImageId = getEditedPostAttribute('featured_media');
 	const content = getEditedPostAttribute('content');
 	const permalink = getPermalink();
-	let cleanContent = content.replace(/<[^>]*>/g, '');
+	let cleanContent = content.replace(/<[^>]*>/g, '').replace(/&#?[a-z0-9]+;/igm, ' ').replace(/[\.,\/#!¿?$%\^&\*;:{}=\-_`~()]/gm, '').toLowerCase();
 	let word_arr = cleanContent.split(' ');
 
 	return {
