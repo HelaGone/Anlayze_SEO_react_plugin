@@ -16,24 +16,24 @@ function register_seo_metaboxes(){
         'single'=>true,
         'show_in_rest'=>true
     );
-    register_meta('post', 'objective_words', $args);
-    register_meta('post', 'title_tag', $args);
-    register_meta('post', 'meta_description', $args);
-    register_meta('post', 'meta_keywords', $args);
+    register_meta('post', '_meta_objective', $args);
+    register_meta('post', '_meta_title', $args);
+    register_meta('post', '_meta_description', $args);
+    register_meta('post', '_meta_keywords', $args);
     
-    register_meta('post', 'objective_words_cc', $args);
-    register_meta('post', 'title_tag_cc', $args);
-    register_meta('post', 'meta_description_cc', $args);
-    register_meta('post', 'meta_keywords_cc', $args);
+    register_meta('post', '_meta_objective_cc', $args);
+    register_meta('post', '_meta_title_cc', $args);
+    register_meta('post', '_meta_description_cc', $args);
+    register_meta('post', '_meta_keywords_cc', $args);
 
     register_meta('post', 'body_content_cc', $args);
     register_meta('post', 'alt_attribute_cc', $args);
     register_meta('post', 'permalink_cc', $args);
 
-    register_meta('post', 'objective_words_mc', $args);
-    register_meta('post', 'title_tag_mc', $args);
-    register_meta('post', 'meta_description_mc', $args);
-    register_meta('post', 'meta_keywords_mc', $args);
+    register_meta('post', '_meta_objective_mc', $args);
+    register_meta('post', '_meta_title_mc', $args);
+    register_meta('post', '_meta_description_mc', $args);
+    register_meta('post', '_meta_keywords_mc', $args);
     register_meta('post', 'body_content_mc', $args);
     register_meta('post', 'alt_attribute_mc', $args);
     register_meta('post', 'permalink_mc', $args);

@@ -20,25 +20,25 @@ class SeoAnalysis extends Component{
 		//Binding methods
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.state = {
-			objective_words: {
+			_meta_objective: {
 				meta:{key: '',value: ''},
-				color_code: {key: 'objective_words_cc',value: 'red'},
-				match: {key: 'objective_words_mc', value: 'red'}
+				color_code: {key: '_meta_objective_cc',value: 'red'},
+				match: {key: '_meta_objective_mc', value: 'red'}
 			},
-			title_tag: {
+			_meta_title: {
 				meta:{key: '',value: ''},
-				color_code: {key: 'title_tag_cc',value: 'red'},
-				match: {key: 'title_tag_mc', value: 'red'}
+				color_code: {key: '_meta_title_cc',value: 'red'},
+				match: {key: '_meta_title_mc', value: 'red'}
 			},
-			meta_description: {
+			_meta_description: {
 				meta:{key: '',value: ''},
-				color_code: {key: 'meta_description_cc',value: 'red'},
-				match: {key: 'meta_description_mc', value: 'red'}
+				color_code: {key: '_meta_description_cc',value: 'red'},
+				match: {key: '_meta_description_mc', value: 'red'}
 			},
-			meta_keywords: {
+			_meta_keywords: {
 				meta:{key: '',value: ''},
-				color_code: {key: 'meta_keywords_cc',value: 'red'},
-				match: {key: 'meta_keywords_mc', value: 'red'}
+				color_code: {key: '_meta_keywords_cc',value: 'red'},
+				match: {key: '_meta_keywords_mc', value: 'red'}
 			},
 			body_content: {
 				color_code:{key: 'body_content_cc',value: 'red'},
@@ -60,25 +60,25 @@ class SeoAnalysis extends Component{
 		}).then( (data) => {
 			// console.log(data.meta);
 			this.setState({
-				objective_words: {
-					meta:{key: 'objective_words',value: (data.meta.objective_words) ? data.meta.objective_words : ''},
-					color_code:{key: 'objective_words_cc', value: (data.meta.objective_words_cc) ? data.meta.objective_words_cc : 'red'},
-					match: {key: 'objective_words_mc', value: (data.meta.objective_words_mc) ? data.meta.objective_words_mc : 'red'}
+				_meta_objective: {
+					meta:{key: '_meta_objective',value: (data.meta._meta_objective) ? data.meta._meta_objective : ''},
+					color_code:{key: '_meta_objective_cc', value: (data.meta._meta_objective_cc) ? data.meta._meta_objective_cc : 'red'},
+					match: {key: '_meta_objective_mc', value: (data.meta._meta_objective_mc) ? data.meta._meta_objective_mc : 'red'}
 				}, 
-				title_tag: {
-					meta: {key: 'title_tag',value: (data.meta.title_tag) ? data.meta.title_tag : ''},
-					color_code:{key: 'title_tag_cc', value: (data.meta.title_tag_cc) ? data.meta.title_tag_cc : 'red'},
-					match: {key: 'title_tag_mc', value: (data.meta.title_tag_mc) ? data.meta.title_tag_mc : 'red'}
+				_meta_title: {
+					meta: {key: '_meta_title',value: (data.meta._meta_title) ? data.meta._meta_title : ''},
+					color_code:{key: '_meta_title_cc', value: (data.meta._meta_title_cc) ? data.meta._meta_title_cc : 'red'},
+					match: {key: '_meta_title_mc', value: (data.meta._meta_title_mc) ? data.meta._meta_title_mc : 'red'}
 				},
-				meta_description: {
-					meta:{key: 'meta_description',value: (data.meta.meta_description) ? data.meta.meta_description : ''},
-					color_code:{key: 'meta_description_cc', value: (data.meta.meta_description_cc) ? data.meta.meta_description_cc : 'red'},
-					match: {key: 'meta_description_mc', value: (data.meta.meta_description_mc) ? data.meta.meta_description_mc : 'red'}
+				_meta_description: {
+					meta:{key: '_meta_description',value: (data.meta._meta_description) ? data.meta._meta_description : ''},
+					color_code:{key: '_meta_description_cc', value: (data.meta._meta_description_cc) ? data.meta._meta_description_cc : 'red'},
+					match: {key: '_meta_description_mc', value: (data.meta._meta_description_mc) ? data.meta._meta_description_mc : 'red'}
 				},
-				meta_keywords: {
-					meta:{key: 'meta_keywords',value: (data.meta.meta_keywords) ? data.meta.meta_keywords : ''},
-					color_code:{key: 'meta_keywords_cc', value: (data.meta.meta_keywords_cc) ? data.meta.meta_keywords_cc : 'red'},
-					match: {key: 'meta_keywords_mc', value: (data.meta.meta_keywords_mc) ? data.meta.meta_keywords_mc : 'red'}
+				_meta_keywords: {
+					meta:{key: '_meta_keywords',value: (data.meta._meta_keywords) ? data.meta._meta_keywords : ''},
+					color_code:{key: '_meta_keywords_cc', value: (data.meta._meta_keywords_cc) ? data.meta._meta_keywords_cc : 'red'},
+					match: {key: '_meta_keywords_mc', value: (data.meta._meta_keywords_mc) ? data.meta._meta_keywords_mc : 'red'}
 				},
 				body_content: {
 					color_code:{key: 'body_content_cc',value: (data.meta.body_content_cc) ? data.meta.body_content_cc : 'red'},
@@ -102,6 +102,7 @@ class SeoAnalysis extends Component{
 	static getDerivedStateFromProps(nextProps, state){
 		if( (nextProps.isPublishing || nextProps.isSaving) && !nextProps.isAutoSaving ){
 			let arr_state = Object.values(state);
+			console.log(arr_state);
 			const iterate = arr_state.map(element => {
 				let nobj = [element.meta, element.color_code, element.match];
 				return nobj;
@@ -127,8 +128,7 @@ class SeoAnalysis extends Component{
 	}//End getDerivedStateFromProps
 
 	componentDidUpdate(prevProps, prevState){
-		const {objective_words} = prevState;
-
+		const {_meta_objective} = prevState;
 		//Body Content
 		const {content_count, actual_content} = prevProps;
 		if(content_count !== undefined && content_count !== 0){
@@ -141,8 +141,8 @@ class SeoAnalysis extends Component{
 				color_code = 'green';
 			}
 
-			if(objective_words.meta.value !== null && actual_content !== null){
-				const content_check = check_match(objective_words.meta.value, actual_content);
+			if(_meta_objective.meta.value !== null && actual_content !== null){
+				const content_check = check_match(_meta_objective.meta.value, actual_content);
 				let match_color = (content_check) ? 'green' : 'red';
 
 				if(color_code !== prevState.body_content.color_code.value || prevState.body_content.match.value !== match_color){
@@ -170,8 +170,8 @@ class SeoAnalysis extends Component{
 				color_code = 'green';
 			}
 
-			if(objective_words.meta.value !== null && alt_text !== null){
-				const alt_check = check_match(objective_words.meta.value, alt_text);
+			if(_meta_objective.meta.value !== null && alt_text !== null){
+				const alt_check = check_match(_meta_objective.meta.value, alt_text);
 				if(alt_check){
 					match_color = 'green';
 				}else{
@@ -204,9 +204,9 @@ class SeoAnalysis extends Component{
 					color_code = 'red';
 				}
 
-				if(objective_words.meta.value !== null && slug[1] !== null){
+				if(_meta_objective.meta.value !== null && slug[1] !== null){
 					let clean_slug = slug[1].replace(/\-/g, ' ');
-					const permalink_check = check_match(objective_words.meta.value, clean_slug);
+					const permalink_check = check_match(_meta_objective.meta.value, clean_slug);
 					let match_color = ''//(permalink_check) ? 'green' : 'red';
 
 					if(permalink_check){
@@ -216,7 +216,7 @@ class SeoAnalysis extends Component{
 					}
 
 					if(color_code !== prevState.permalink.color_code.value || match_color !== prevState.permalink.match.value){
-						console.log(`${match_color} is the color for permalink match`);
+						// console.log(`${match_color} is the color for permalink match`);
 						this.setState({
 							permalink: {
 								color_code: {key: 'permalink_cc', value: color_code},
@@ -237,9 +237,9 @@ class SeoAnalysis extends Component{
 		let value_count = target.value.split(' ');
 		let color_code = '';
 		let match_color = '';
-		const {objective_words} = this.state;
-		if(name === 'objective_words'){
-			let ow_count = target.value.split(', ')
+		const {_meta_objective} = this.state;
+		if(name === '_meta_objective'){
+			let ow_count = target.value.split(',');
 			if(ow_count.length === 4){
 				color_code = 'green';
 			}else if(ow_count.length < 4 && ow_count.length > 1){
@@ -247,7 +247,7 @@ class SeoAnalysis extends Component{
 			}else{
 				color_code = 'red';
 			}
-		}else if(name == 'meta_description'){
+		}else if(name == '_meta_description'){
 			if(value_count.length === 24){
 				color_code = 'green'
 			}else if(value_count.length >= 12 &&  value_count.length < 24){
@@ -255,13 +255,13 @@ class SeoAnalysis extends Component{
 			}else{
 				color_code = 'red';
 			}
-		}else if(name === 'title_tag'){
+		}else if(name === '_meta_title'){
 			if(value_count.length < 6 || value_count.length > 12){
 				color_code = 'red';
 			}else if(value_count.length >= 6 && value_count.length <= 12){
 				color_code = 'green';
 			}
-		}else if(name === 'meta_keywords'){
+		}else if(name === '_meta_keywords'){
 			let keyword_count = target.value.split(', ');
 			if(keyword_count.length < 6 || keyword_count.length > 12){
 				color_code = 'red';
@@ -277,7 +277,7 @@ class SeoAnalysis extends Component{
 		}
 
 		
-		if(check_match(objective_words.meta.value, value)){
+		if(check_match(_meta_objective.meta.value, value)){
 			match_color = 'green';
 		}else{
 			match_color = 'red';
@@ -310,23 +310,23 @@ class SeoAnalysis extends Component{
 				</PluginSidebarMoreMenuItem>
 				<PluginSidebar name="seo-analysis" title={__( 'Seo Analysis', 'analyze-seo' )}>
 					<PanelBody className="seo-analysis-panel">
-						<label for="objective_words">{__('Objective Words', 'analyze-seo')}</label><br/>
-						<input name="objective_words" value={this.state.objective_words.meta.value} onChange={this.handleInputChange}/><br/>
+						<label for="_meta_objective">{__('Objective Words', 'analyze-seo')}</label><br/>
+						<input name="_meta_objective" value={this.state._meta_objective.meta.value} onChange={this.handleInputChange}/><br/>
 						<em>{__('This should be at least 4 words', 'analyze-seo')}</em><br/><br/>
 
-						<label for="title_tag">{__('Title Tag', 'analyze-seo')}</label><br/>
-						<input name="title_tag" value={this.state.title_tag.meta.value} onChange={this.handleInputChange}/><br/>
+						<label for="_meta_title">{__('Title Tag', 'analyze-seo')}</label><br/>
+						<input name="_meta_title" value={this.state._meta_title.meta.value} onChange={this.handleInputChange}/><br/>
 						<em>{__('It should be between 6 and 12 words long and it hasn\'t have more than 60 characters', 'analyze-seo')}</em><br/><br/>
 
-						<label for="meta_description">{__('Meta Description', 'analyze-seo')}</label><br/>
-						<textarea name="meta_description" onChange={this.handleInputChange} rows="5" placeholder="Meta description">
-							{this.state.meta_description.meta.value}
+						<label for="_meta_description">{__('Meta Description', 'analyze-seo')}</label><br/>
+						<textarea name="_meta_description" onChange={this.handleInputChange} rows="5" placeholder="Meta description">
+							{this.state._meta_description.meta.value}
 						</textarea><br/>
 						<em>{__('It should be between 12 and 24 words long', 'analyze-seo')}</em><br/><br/>
 
-						<label for="meta_keywords">{__('Meta Keywords', 'analyze-seo')}</label><br/>
-						<textarea name="meta_keywords" onChange={this.handleInputChange} rows="5" placeholder="Meta keywords">
-							{this.state.meta_keywords.meta.value}
+						<label for="_meta_keywords">{__('Meta Keywords', 'analyze-seo')}</label><br/>
+						<textarea name="_meta_keywords" onChange={this.handleInputChange} rows="5" placeholder="Meta keywords">
+							{this.state._meta_keywords.meta.value}
 						</textarea>
 						<em>{__('It should be between 6 and 12 words long', 'analyze-seo')}</em><br/><br/>
 
@@ -343,23 +343,23 @@ class SeoAnalysis extends Component{
 								<tbody>
 									<tr>
 										<td>Objective Words</td>
-										<td><Signal status_count={this.state.objective_words.color_code.value} /></td>
-										{/*<td><Match status_match={this.state.objective_words.match.value} /></td>*/}
+										<td><Signal status_count={this.state._meta_objective.color_code.value} /></td>
+										{/*<td><Match status_match={this.state._meta_objective.match.value} /></td>*/}
 									</tr>
 									<tr>
 										<td>Title Tag</td>
-										<td><Signal status_count={this.state.title_tag.color_code.value} /></td>
-										<td><Match status_match={this.state.title_tag.match.value} /></td>
+										<td><Signal status_count={this.state._meta_title.color_code.value} /></td>
+										<td><Match status_match={this.state._meta_title.match.value} /></td>
 									</tr>
 									<tr>
 										<td>Meta Description</td>
-										<td><Signal status_count={this.state.meta_description.color_code.value} /></td>
-										<td><Match status_match={this.state.meta_description.match.value} /></td>
+										<td><Signal status_count={this.state._meta_description.color_code.value} /></td>
+										<td><Match status_match={this.state._meta_description.match.value} /></td>
 									</tr>
 									<tr>
 										<td>Meta Keywords</td>
-										<td><Signal status_count={this.state.meta_keywords.color_code.value} /></td>
-										<td><Match status_match={this.state.meta_keywords.match.value} /></td>
+										<td><Signal status_count={this.state._meta_keywords.color_code.value} /></td>
+										<td><Match status_match={this.state._meta_keywords.match.value} /></td>
 									</tr>
 									<tr>
 										<td>Body Content</td>
@@ -396,7 +396,7 @@ const check_match = (ow, haystack) => {
 	const intersection = ow_arr.map(needle => {
 		haystack_arr.map((hay)=>{
 			if(needle === hay){
-				console.log(`Needle found: ${needle}`);
+				// console.log(`Needle found: ${needle}`);
 				return true;
 			}
 		})

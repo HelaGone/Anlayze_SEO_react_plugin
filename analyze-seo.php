@@ -306,7 +306,7 @@ if(!function_exists('currentpost_title_tag')){
 
         //Pasted
         if ( is_singular() ) {
-            if ( Taxonomy_settings()->has_post_fields( $post_type = get_post_type() ) && $meta_title = get_post_meta( get_the_ID(), 'title_tag', true ) ) {
+            if ( Taxonomy_settings()->has_post_fields( $post_type = get_post_type() ) && $meta_title = get_post_meta( get_the_ID(), '_meta_title', true ) ) {
                 return $meta_title;
             } else {
                 $key = "single_{$post_type}_title";
@@ -379,8 +379,8 @@ if(!function_exists('update_head_meta')){
             $post_object = $wp_query->queried_object;
             $post_id = $post_object->ID;
             if ( Taxonomy_settings()->has_post_fields( $post_type = get_post_type() ) ) {
-                $meta_description = get_post_meta( $post_id, 'meta_description', true );
-                $meta_keywords = get_post_meta( $post_id, 'meta_keywords', true );
+                $meta_description = get_post_meta( $post_id, '_meta_description', true );
+                $meta_keywords = get_post_meta( $post_id, '_meta_keywords', true );
             }
             $key = "single_{$post_type}";
         } elseif ( is_front_page() ) {
