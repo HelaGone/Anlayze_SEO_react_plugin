@@ -102,7 +102,7 @@ class SeoAnalysis extends Component{
 	static getDerivedStateFromProps(nextProps, state){
 		if( (nextProps.isPublishing || nextProps.isSaving) && !nextProps.isAutoSaving ){
 			let arr_state = Object.values(state);
-			console.log(arr_state);
+			// console.log(arr_state);
 			const iterate = arr_state.map(element => {
 				let nobj = [element.meta, element.color_code, element.match];
 				return nobj;
@@ -121,10 +121,10 @@ class SeoAnalysis extends Component{
 						},(err)=>{
 							return err;
 						});
-					}//end if
-				}//end for 2
-			}//end for 1
-		}//end if is saving || is publishing
+					}
+				}
+			}
+		}
 	}//End getDerivedStateFromProps
 
 	componentDidUpdate(prevProps, prevState){
@@ -179,7 +179,7 @@ class SeoAnalysis extends Component{
 				}
 
 				if(color_code !== prevState.alt_attribute.color_code.value || match_color !== prevState.alt_attribute.match.value){
-					//console.log(`${match_color} is the color for alt attribute match`);
+					// console.log(`${match_color} is the color for alt attribute match`);
 					this.setState({
 						alt_attribute:{
 							color_code:{key: 'alt_attribute_cc', value: color_code},
@@ -239,7 +239,7 @@ class SeoAnalysis extends Component{
 		let match_color = '';
 		const {_meta_objective} = this.state;
 		if(name === '_meta_objective'){
-			let ow_count = target.value.split(',');
+			let ow_count = target.value.split(', ');
 			if(ow_count.length === 4){
 				color_code = 'green';
 			}else if(ow_count.length < 4 && ow_count.length > 1){
@@ -276,14 +276,9 @@ class SeoAnalysis extends Component{
 			}
 		}
 
-		let objective_words = _meta_objective.meta.value;
 		if(name !== '_meta_objective'){
-			console.log('a ver entra aqui?');
-			if(check_match(objective_words, value)){
-				match_color = 'green';
-			}else{
-				match_color = 'red';
-			}
+			let objective_words = _meta_objective.meta.value;
+			match_color = check_match(objective_words, value) ? 'green' : 'red';
 		}
 
 		//Setting State fron onChange
@@ -315,7 +310,7 @@ class SeoAnalysis extends Component{
 					<PanelBody className="seo-analysis-panel">
 						<label for="_meta_objective">{__('Objective Words', 'analyze-seo')}</label><br/>
 						<input name="_meta_objective" value={this.state._meta_objective.meta.value} onChange={this.handleInputChange}/><br/>
-						<em>{__('This should be at least 4 words', 'analyze-seo')}</em><br/><br/>
+						<em>{__('This should be up to 4 words', 'analyze-seo')}</em><br/><br/>
 
 						<label for="_meta_title">{__('Title Tag', 'analyze-seo')}</label><br/>
 						<input name="_meta_title" value={this.state._meta_title.meta.value} onChange={this.handleInputChange}/><br/>
@@ -392,23 +387,41 @@ class SeoAnalysis extends Component{
 
 //checking ow matches in haystack
 const check_match = (ow, haystack) => {
-	let clean_ow = ow.replace(/\,/g, '').toLowerCase();
-	const ow_arr = clean_ow.split(' ');
-	const haystack_arr = haystack.toLowerCase().split(' ');
-	console.log(ow_arr);
-	// console.log(haystack_arr);
-	const intersection = ow_arr.map(needle => {
-		haystack_arr.map((hay)=>{
-			if(needle === hay){
-				console.log(`Needle found: ${needle}`);
-				return true;
+	let check = false;
+	if(ow !== '' && haystack !== ''){
+		// console.log(`not empty`);
+		let clean_ow = ow.replace(/\,/g, '').toLowerCase();
+		const ow_arr = clean_ow.split(' ');
+
+		let clean_haystack = haystack.replace(/\,/g, '');
+		const haystack_arr = clean_haystack.toLowerCase().split(' ');
+
+		let nObj = {};
+		const intersection = ow_arr.map(needle => {
+			haystack_arr.map((hay, index)=>{
+				if(needle !== '' && hay !== ''){
+					if(needle === hay){
+						console.log(`found: ${needle} in ${hay}`);
+						nObj[needle] = true;
+					}
+				}
+			})
+			return nObj;
+		});
+
+		console.log(intersection[0]);
+		let count = 0;
+		for(let prop in intersection[0]){
+			if(intersection[0].hasOwnProperty(prop)){
+				count++;
 			}
-		})
-		return false;
-		// return haystack_arr.includes(needle);
-	});
-	// const isMatch = intersection.includes(true);
-	return intersection;
+		}
+
+		if(count === ow_arr.length){
+			check = true;
+		}
+	}
+	return (check) ? check : false;
 }
 
 //Higer-Order-Component
