@@ -58,7 +58,7 @@ class SeoAnalysis extends Component{
 			path: `/wp/v2/posts/${this.props.postId}`,
 			method: 'GET'
 		}).then( (data) => {
-			// console.log(data.meta);
+			//console.log(data.meta);
 			this.setState({
 				_meta_objective: {
 					meta:{key: '_meta_objective',value: (data.meta._meta_objective) ? data.meta._meta_objective : ''},
@@ -276,8 +276,8 @@ class SeoAnalysis extends Component{
 			}
 		}
 
-		
-		if(check_match(_meta_objective.meta.value, value)){
+		let objective_words = _meta_objective.meta.value.replace(/\,/g, '');
+		if(check_match(objective_words, value)){
 			match_color = 'green';
 		}else{
 			match_color = 'red';
@@ -389,14 +389,14 @@ class SeoAnalysis extends Component{
 
 //checking ow matches in haystack
 const check_match = (ow, haystack) => {
-	const ow_arr = ow.toLowerCase().split(', ');
+	const ow_arr = ow.toLowerCase().split(' ');
 	const haystack_arr = haystack.toLowerCase().split(' ');
-	// console.log(ow_arr);
+	console.log(ow_arr);
 	// console.log(haystack_arr);
 	const intersection = ow_arr.map(needle => {
 		haystack_arr.map((hay)=>{
 			if(needle === hay){
-				// console.log(`Needle found: ${needle}`);
+				console.log(`Needle found: ${needle}`);
 				return true;
 			}
 		})
