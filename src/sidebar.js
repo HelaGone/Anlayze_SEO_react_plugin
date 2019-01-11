@@ -276,11 +276,14 @@ class SeoAnalysis extends Component{
 			}
 		}
 
-		let objective_words = _meta_objective.meta.value.replace(/\,/g, '');
-		if(check_match(objective_words, value)){
-			match_color = 'green';
-		}else{
-			match_color = 'red';
+		let objective_words = _meta_objective.meta.value;
+		if(name !== '_meta_objective'){
+			console.log('a ver entra aqui?');
+			if(check_match(objective_words, value)){
+				match_color = 'green';
+			}else{
+				match_color = 'red';
+			}
 		}
 
 		//Setting State fron onChange
@@ -389,7 +392,8 @@ class SeoAnalysis extends Component{
 
 //checking ow matches in haystack
 const check_match = (ow, haystack) => {
-	const ow_arr = ow.toLowerCase().split(' ');
+	let clean_ow = ow.replace(/\,/g, '').toLowerCase();
+	const ow_arr = clean_ow.split(' ');
 	const haystack_arr = haystack.toLowerCase().split(' ');
 	console.log(ow_arr);
 	// console.log(haystack_arr);
