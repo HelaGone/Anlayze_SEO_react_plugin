@@ -1,0 +1,96 @@
+# Copyright (C) 2019 Holkan Luna
+# This file is distributed under the same license as the Analyze SEO plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Analyze SEO 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/analyze-seo\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2019-01-11T22:37:45+00:00\n"
+"PO-Revision-Date: 2019-01-11 16:43-0600\n"
+"X-Generator: Poedit 2.2\n"
+"X-Domain: analyze-seo\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: es_MX\n"
+
+#. Plugin Name of the plugin
+msgid "Analyze SEO"
+msgstr "Análisis de SEO"
+
+#. Plugin URI of the plugin
+msgid "https://github.com/HelaGone/Anlayze_SEO_react_plugin"
+msgstr "https://github.com/HelaGone/Anlayze_SEO_react_plugin"
+
+#. Description of the plugin
+msgid "This plugin analyzes SEO in a post"
+msgstr "Este plugin analiza el SEO en una publicación"
+
+#. Author of the plugin
+msgid "Holkan Luna"
+msgstr "Holkan Luna"
+
+#. Author URI of the plugin
+msgid "http://cubeinthebox.com"
+msgstr "http://cubeinthebox.com"
+
+#: analyze-seo.php:95
+msgid "save changes to update"
+msgstr "guarda los cambios para actualizar"
+
+#: analyze-seo.php:119 analyze-seo.php:159 src/sidebar.js:320
+msgid "Title Tag"
+msgstr "Etiqueta Título"
+
+#: analyze-seo.php:122 analyze-seo.php:163
+msgid "Title word count: "
+msgstr "Conteo Título: "
+
+#: analyze-seo.php:128 analyze-seo.php:170 src/sidebar.js:324
+msgid "Meta Description"
+msgstr "Meta Descripción"
+
+#: analyze-seo.php:131 analyze-seo.php:174
+msgid "Description word count: "
+msgstr "Conteo Descripción: "
+
+#: analyze-seo.php:137 analyze-seo.php:181 src/sidebar.js:330
+msgid "Meta Keywords"
+msgstr "Meta palabras clave"
+
+#: analyze-seo.php:253
+msgid "Please don't try to format() a non-string."
+msgstr "Por favor no intente format() un no-string."
+
+#: src/sidebar.js:314
+msgid "Seo Analysis"
+msgstr "Análisis SEO"
+
+#: src/sidebar.js:316
+msgid "Objective Words"
+msgstr "Palabras Objetivo"
+
+#: src/sidebar.js:318
+msgid "This should be up to 4 words"
+msgstr "Esto debe ser hasta 4 palabras"
+
+#: src/sidebar.js:322
+msgid ""
+"It should be between 6 and 12 words long and it hasn't have more than 60 "
+"characters"
+msgstr ""
+"Debe ser entre 6 y 12 palabras y no debe tener más de 60 caracteres"
+
+#: src/sidebar.js:328
+msgid "It should be between 12 and 24 words long"
+msgstr "Debe ser entre 12 y 24 palabras"
+
+#: src/sidebar.js:334
+msgid "It should be between 6 and 12 words long"
+msgstr "Debe ser entre 6 y 12 palabras"
+
+#: src/sidebar.js:337
+msgid "Word Count & Word Match"
+msgstr "Conteo Palabras & Conteo Coincidencia"

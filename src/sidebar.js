@@ -143,7 +143,12 @@ class SeoAnalysis extends Component{
 
 			if(_meta_objective.meta.value !== null && actual_content !== null){
 				const content_check = check_match(_meta_objective.meta.value, actual_content);
-				let match_color = (content_check) ? 'green' : 'red';
+				let match_color = '';
+				if(content_check){
+					match_color = 'green';
+				}else{
+					match_color = 'red';
+				}
 
 				if(color_code !== prevState.body_content.color_code.value || prevState.body_content.match.value !== match_color){
 					//console.log(`${match_color} is the color for body content match`);
@@ -389,13 +394,10 @@ class SeoAnalysis extends Component{
 const check_match = (ow, haystack) => {
 	let check = false;
 	if(ow !== '' && haystack !== ''){
-		// console.log(`not empty`);
 		let clean_ow = ow.replace(/\,/g, '').toLowerCase();
 		const ow_arr = clean_ow.split(' ');
-
 		let clean_haystack = haystack.replace(/\,/g, '');
 		const haystack_arr = clean_haystack.toLowerCase().split(' ');
-
 		let nObj = {};
 		const intersection = ow_arr.map(needle => {
 			haystack_arr.map((hay, index)=>{
@@ -408,16 +410,14 @@ const check_match = (ow, haystack) => {
 			})
 			return nObj;
 		});
-
-		console.log(intersection[0]);
 		let count = 0;
 		for(let prop in intersection[0]){
 			if(intersection[0].hasOwnProperty(prop)){
 				count++;
 			}
 		}
-
-		if(count === ow_arr.length){
+		// console.log(`${count} - ${ow_arr.length}`);
+		if(count >= ow_arr.length || count > 3){
 			check = true;
 		}
 	}

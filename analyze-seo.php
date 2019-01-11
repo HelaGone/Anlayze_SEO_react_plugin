@@ -9,7 +9,7 @@
  * License: GPL2+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain: analyze-seo
- * Domain Path: /languages 
+ * Domain Path: /languages
  * @package analyze-seo
  */
 
@@ -92,7 +92,7 @@ function add_term_boxes() {
  * @return string The text to go between the <noscript> tags.
  */
 function noscript_character_count( $text ) {
-    return sprintf( __( '%d (save changes to update)', 'analyze-seo' ), strlen( $text ) );
+    return sprintf( __( 'save changes to update', 'analyze-seo' ), strlen( $text ) );
 }
 
 /**
@@ -116,25 +116,25 @@ function add_term_meta_fields( $taxonomy ) {
         <h3><?php echo esc_html( 'SEO Fields' ); ?></h3>
         <div class="wp-seo-term-meta-fields">
             <div class="form-field">
-                <label for="wp_seo_meta_title"><?php esc_html_e( 'Title Tag', 'analyze-seo' ); ?></label>
+                <label for="wp_seo_meta_title"><?php __( 'Title Tag', 'analyze-seo' ); ?></label>
                 <input type="text" id="wp_seo_meta_title" name="seo_meta[title]" value="" size="96" />
                 <p>
-                    <?php esc_html_e( 'Title word count: ', 'analyze-seo' ); ?>
+                    <?php __( 'Title word count: ', 'analyze-seo' ); ?>
                     <span class="title-character-count"></span>
                     <noscript><?php echo esc_html( noscript_character_count( '' ) ); ?></noscript>
                 </p>
             </div>
             <div class="form-field">
-                <label for="wp_seo_meta_description"><?php esc_html_e( 'Meta Description', 'analyze-seo' ); ?></label>
+                <label for="wp_seo_meta_description"><?php __( 'Meta Description', 'analyze-seo' ); ?></label>
                 <textarea id="wp_seo_meta_description" name="seo_meta[description]" rows="2" cols="96"></textarea>
                 <p>
-                    <?php esc_html_e( 'Description word count: ', 'analyze-seo' ); ?>
+                    <?php __( 'Description word count: ', 'analyze-seo' ); ?>
                     <span class="description-character-count"></span>
                     <noscript><?php echo esc_html( noscript_character_count( '' ) ); ?></noscript>
                 </p>
             </div>
             <div class="form-field">
-                <label for="wp_seo_meta_keywords"><?php esc_html_e( 'Meta Keywords', 'analyze-seo' ) ?></label>
+                <label for="wp_seo_meta_keywords"><?php __( 'Meta Keywords', 'analyze-seo' ) ?></label>
                 <textarea id="wp_seo_meta_keywords" name="seo_meta[keywords]" rows="2" cols="96"></textarea>
             </div>
         </div>
@@ -156,29 +156,29 @@ function edit_term_meta_fields( $tag, $taxonomy ) {
         <table class="form-table wp-seo-term-meta-fields">
             <tbody>
                 <tr class="form-field">
-                    <th scope="row"><label for="wp_seo_meta_title"><?php esc_html_e( 'Title Tag', 'analyze-seo' ); ?></label></th>
+                    <th scope="row"><label for="wp_seo_meta_title"><?php __( 'Title Tag', 'analyze-seo' ); ?></label></th>
                     <td>
                         <input type="text" id="wp_seo_meta_title" name="seo_meta[title]" value="<?php echo esc_attr( $title = $values['title'] ); ?>" size="96" />
                         <p class="description">
-                            <?php esc_html_e( 'Title word count: ', 'analyze-seo' ); ?>
+                            <?php __( 'Title word count: ', 'analyze-seo' ); ?>
                             <span class="title-character-count"></span>
                             <noscript><?php echo esc_html( noscript_character_count( $title ) ); ?></noscript>
                         </p>
                     </td>
                 </tr>
                 <tr class="form-field">
-                    <th scope="row"><label for="wp_seo_meta_description"><?php esc_html_e( 'Meta Description', 'analyze-seo' ); ?></label></th>
+                    <th scope="row"><label for="wp_seo_meta_description"><?php __( 'Meta Description', 'analyze-seo' ); ?></label></th>
                     <td>
                         <textarea id="wp_seo_meta_description" name="seo_meta[description]" rows="2" cols="96"><?php echo esc_textarea( $description = $values['description'] ); ?></textarea>
                         <p class="description">
-                            <?php esc_html_e( 'Description word count: ', 'analyze-seo' ); ?>
+                            <?php __( 'Description word count: ', 'analyze-seo' ); ?>
                             <span class="description-character-count"></span>
                             <noscript><?php echo esc_html( noscript_character_count( $description ) ); ?></noscript>
                         </p>
                     <td>
                 </tr>
                 <tr class="form-field">
-                    <th scope="row"><label for="wp_seo_meta_keywords"><?php esc_html_e( 'Meta Keywords', 'analyze-seo' ) ?></label></th>
+                    <th scope="row"><label for="wp_seo_meta_keywords"><?php __( 'Meta Keywords', 'analyze-seo' ) ?></label></th>
                     <td><textarea id="wp_seo_meta_keywords" name="seo_meta[keywords]" rows="2" cols="96"><?php echo esc_textarea( $values['keywords'] ); ?></textarea></td>
                 </tr>
             </tbody>
@@ -250,7 +250,7 @@ function save_term_fields( $term_id, $tt_id, $taxonomy ) {
  */
 function format( $string ) {
     if ( ! is_string( $string ) ) {
-        return new WP_Error( 'format_error', __( "Please don't try to format() a non-string.", 'wp-seo' ) );
+        return new WP_Error( 'format_error', __( "Please don't try to format() a non-string.", 'analyze-seo' ) );
     }
 
     $raw_string = $string;
