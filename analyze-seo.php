@@ -50,7 +50,11 @@ function analyze_seo_scripts() {
 // add_action('enqueue_block_assets', 'analyze_seo_scripts');
 add_action('enqueue_block_editor_assets', 'analyze_seo_scripts');
 
-
+// for plugins
+function analyse_seo_load_textdomain() {
+    load_plugin_textdomain( 'analyze-seo', false, basename( dirname( __FILE__ ) ) . '/languages' ); 
+}
+add_action( 'init', 'analyse_seo_load_textdomain' );
 
 /**
  * Taxonomy SEO fields
