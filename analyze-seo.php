@@ -29,13 +29,23 @@ function analyze_seo_scripts() {
     $blockPath = '/dist/block.js';
     $stylePath = '/dist/block.css';
 
-    // Enqueue the bundled block JS file
-    wp_enqueue_script(
-        'analyze-seo-block-js',
-        plugins_url( $blockPath, __FILE__ ),
-        [ 'wp-i18n', 'wp-edit-post', 'wp-element', 'wp-editor', 'wp-components', 'wp-data', 'wp-plugins', 'wp-edit-post', 'wp-api' ],
-        filemtime( plugin_dir_path(__FILE__) . $blockPath )
+    wp_register_script(
+        'analyze-seo-block-js', 
+        plugins_url($blockPath, __FILE__), 
+        array(
+            'wp-i18n', 
+            'wp-edit-post', 
+            'wp-element', 
+            'wp-editor', 
+            'wp-components', 
+            'wp-data', 
+            'wp-plugins', 
+            'wp-edit-post', 
+            'wp-api'
+        ), 
+        filemtime( plugin_dir_path(__FILE__) . $blockPath)
     );
+    wp_enqueue_script('analyze-seo-block-js');
 
     // Enqueue frontend and editor block styles
     wp_enqueue_style(
@@ -45,6 +55,8 @@ function analyze_seo_scripts() {
         filemtime( plugin_dir_path(__FILE__) . $stylePath )
     );
 
+    wp_set_script_translations( 'analyze-seo-block-js', 'analyze-seo', plugin_dir_path( __FILE__ ) . 'languages' );
+
 }
 // Enqueue scripts in all admin pages
 // add_action('enqueue_block_assets', 'analyze_seo_scripts');
@@ -52,14 +64,9 @@ add_action('enqueue_block_editor_assets', 'analyze_seo_scripts');
 
 // for plugins
 function analyse_seo_load_textdomain() {
-    load_plugin_textdomain( 'analyze-seo', false, basename( dirname( __FILE__ ) ) . '/languages' ); 
+    load_plugin_textdomain( 'analyze-seo', false, plugin_dir_path( __FILE__ ) . 'languages' );
 }
-add_action( 'init', 'analyse_seo_load_textdomain' );
-
-/**
- * Taxonomy SEO fields
-*/
-
+add_action( 'plugins_loaded', 'analyse_seo_load_textdomain' );
 
 /**
  * The regular expression used to find formatting tags.

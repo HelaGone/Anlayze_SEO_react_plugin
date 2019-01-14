@@ -26,6 +26,7 @@
 		"eslint-plugin-prettier": "^2.7.0",
 		"extract-text-webpack-plugin": "^3.0.2",
 		"node-sass": "^4.7.2",
+		"po2json": "^1.0.0-alpha",
 		"postcss-loader": "^2.0.9",
 		"prettier": "^1.15.3",
 		"raw-loader": "^0.5.1",
@@ -34,5 +35,6 @@
 		"webpack": "^3.12.0"
 	},
 	"version": "1.0.0",
-	"license": "MIT"
+	"license": "MIT",
+	"dependencies": {}
 }

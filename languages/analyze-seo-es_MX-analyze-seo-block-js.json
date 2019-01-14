@@ -1,0 +1,69 @@
+{
+   "domain": "messages",
+   "locale_data": {
+      "messages": {
+         "": {
+            "domain": "messages",
+            "plural_forms": "nplurals=2; plural=(n != 1);",
+            "lang": "es_MX"
+         },
+         "Analyze SEO": [
+            "Análisis de SEO"
+         ],
+         "https://github.com/HelaGone/Anlayze_SEO_react_plugin": [
+            "https://github.com/HelaGone/Anlayze_SEO_react_plugin"
+         ],
+         "This plugin analyzes SEO in a post": [
+            "Este plugin analiza el SEO en una publicación"
+         ],
+         "Holkan Luna": [
+            "Holkan Luna"
+         ],
+         "http://cubeinthebox.com": [
+            "http://cubeinthebox.com"
+         ],
+         "save changes to update": [
+            "guarda los cambios para actualizar"
+         ],
+         "Title Tag": [
+            "Etiqueta Título"
+         ],
+         "Title word count: ": [
+            "Conteo Título: "
+         ],
+         "Meta Description": [
+            "Meta Descripción"
+         ],
+         "Description word count: ": [
+            "Conteo Descripción: "
+         ],
+         "Meta Keywords": [
+            "Meta palabras clave"
+         ],
+         "Please don't try to format() a non-string.": [
+            "Por favor no intente format() un no-string."
+         ],
+         "Seo Analysis": [
+            "Análisis SEO"
+         ],
+         "Objective Words": [
+            "Palabras Objetivo"
+         ],
+         "This should be up to 4 words": [
+            "Esto debe ser hasta 4 palabras"
+         ],
+         "It should be between 6 and 12 words long and it hasn't have more than 60 characters": [
+            "Debe ser entre 6 y 12 palabras y no debe tener más de 60 caracteres"
+         ],
+         "It should be between 12 and 24 words long": [
+            "Debe ser entre 12 y 24 palabras"
+         ],
+         "It should be between 6 and 12 words long": [
+            "Debe ser entre 6 y 12 palabras"
+         ],
+         "Word Count & Word Match": [
+            "Conteo Palabras & Coincidencias"
+         ]
+      }
+   }
+}
