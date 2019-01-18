@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/HelaGone/Anlayze_SEO_react_plugin
  * Description: This plugin analyzes SEO in a post
  * Author: Holkan Luna
- * Author URI: http://cubeinthebox.com
+ * Author URI: https://cubeinthebox.com
  * Version: 1.0.0
  * License: GPL2+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt

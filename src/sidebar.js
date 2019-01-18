@@ -232,7 +232,6 @@ class SeoAnalysis extends Component{
 				}
 			}
 		}
-
 	}//end did update
 
 	handleInputChange(event){
